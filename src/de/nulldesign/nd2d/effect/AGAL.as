@@ -7,13 +7,14 @@
  * 一些方法source和target不能相同，抛出异常
  * sin方法写错修改
  * kil参数错了
+ * 
  */
 package de.nulldesign.nd2d.effect
 {
 	public class AGAL
 	{
 		private static var _code:String = "";
-		public static var _traceCode:Boolean = false ;
+		public static var _traceCode:Boolean = true ;
 		public static function init():void
 		{
 			_code = "";
@@ -23,7 +24,14 @@ package de.nulldesign.nd2d.effect
 			var code:String = _code.toString();
 			_code = "";
 			if(_traceCode)
-				trace(code);
+			{
+				var arr:Array = code.split("\n");
+				arr.pop();
+				for(var i:int = 0 ; i < arr.length;i++)
+				{
+					trace(i+1,arr[i])
+				}
+			}
 			return code;
 		}
 		

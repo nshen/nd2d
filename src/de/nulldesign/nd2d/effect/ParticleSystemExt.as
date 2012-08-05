@@ -4,6 +4,8 @@ package de.nulldesign.nd2d.effect
 	import de.nulldesign.nd2d.display.Node2D;
 	import de.nulldesign.nd2d.effect.ParticleEmitterBase;
 	import de.nulldesign.nd2d.effect.ParticleSystemExtMaterial;
+	import de.nulldesign.nd2d.effect.affector.AlphaAffector;
+	import de.nulldesign.nd2d.effect.affector.SizeAffector;
 	import de.nulldesign.nd2d.materials.texture.Texture2D;
 	
 	import flash.display3D.Context3D;
@@ -13,6 +15,10 @@ package de.nulldesign.nd2d.effect
 		protected var _particles:Vector.<ParticleExt>;
 		protected var _emitter:ParticleEmitterBase;
 		protected var _material:ParticleSystemExtMaterial;
+		
+		protected var _alphaAffector:AlphaAffector = new AlphaAffector();
+		protected var _sizeAffector:SizeAffector = new SizeAffector();
+		
 		protected var _maxCapacity:uint = 0 ;
 		protected var _lastIndex:int = -1;
 		protected var _maxLiveIndex:int = -1;
@@ -27,6 +33,16 @@ package de.nulldesign.nd2d.effect
 			_material = new ParticleSystemExtMaterial(this,texture);
 		}
 		
+		public function get sizeAffector():SizeAffector
+		{
+			return _sizeAffector;
+		}
+
+		public function get alphaAffector():AlphaAffector
+		{
+			return _alphaAffector;
+		}
+
 		public function get particles():Vector.<ParticleExt>
 		{
 			return _particles;

@@ -2,6 +2,9 @@ package de.nulldesign.nd2d.effect
 {
 	import com.adobe.utils.AGALMiniAssembler;
 	
+	import de.nulldesign.nd2d.effect.affector.AffectorBase;
+	import de.nulldesign.nd2d.effect.affector.AlphaAffector;
+	import de.nulldesign.nd2d.effect.affector.SizeAffector;
 	import de.nulldesign.nd2d.geom.Face;
 	import de.nulldesign.nd2d.materials.AMaterial;
 	import de.nulldesign.nd2d.materials.shader.ShaderCache;
@@ -14,7 +17,6 @@ package de.nulldesign.nd2d.effect
 	import flash.display3D.Program3D;
 	import flash.display3D.VertexBuffer3D;
 	import flash.geom.Vector3D;
-
 	public class ParticleSystemExtMaterial extends AMaterial
 	{
 		
@@ -293,30 +295,84 @@ package de.nulldesign.nd2d.effect
 		 * va3		(Vx,Vy,Vz)
 		 * va4		(r,g,b,a) 
 		 * 
+		 * vt0     (passtime / lifetime,null,null,null)
+		 * vt1     (cos*x,sin*y,cos*y,sin*x)
+		 * vt2     
+		 * vt3
+		 * vt4
+		 * vt5
+		 * vt6
+		 * vt7
 		 */		
 		private  function getVertexShader():String
 		{
-		 
+			var vc1:uint;
+			var vc2:uint;
+			var vci:uint;
+			
+			
 			AGAL.init();
 			AGAL.div("vt0.x" , "va2.x" , "va2.y");  
 			AGAL.sat("vt0.x","vt0.x");// vt0.x =  passtime / lifetime
 			
+			//sizeAffector: vc 16 , 17 , 18 , 19 [x,y,0,percent]
+			if(_particleSystem.sizeAffector.bufferData.length > 4) // 2 frames at least
+			{
+				//todo:clear vt8
+				vc1 = 16;
+				AGAL.mov("vt4","vc4.x") //clear
+				for(vci = 0 ; vci < AffectorBase.GPU_MAX_FRAMES - 1 ; vci++,vc1++)
+				{
+					vc2 = vc1 + 1 ;
+					AGAL.sge("vt6.x","vt0.x","vc"+vc1+".w"); 
+					AGAL.slt("vt6.y","vt0.x","vc"+vc2+".w"); 
+					AGAL.mul("vt6.x","vt6.x","vt6.y"); //   (>= frame1 && < frame2)? 1 : 0
+					
+					AGAL.sub("vt7.x","vt0.x","vc"+vc1+".w"); // p - frame1
+					AGAL.mov("vt7.y","vc"+vc2+".w");
+					AGAL.sub("vt7.y","vt7.y","vc"+vc1+".w"); // frame2 - frame1
+					AGAL.div("vt7.x","vt7.x","vt7.y"); //  weight : vt7.x =  (p - frame1) / (frame2 - frame1)
+					
+					
+					AGAL.mov("vt3.xy","vc"+vc1+".xy");
+					AGAL.lerp("vt1.xy","vt3.xy" , "vc"+vc2+".xy","vt7.x");
+					
+					
+					//if
+					AGAL.mul("vt1.xy","vt1.xy","vt6.xx");
+					AGAL.add("vt4.xy","vt4.xy","vt1.xy");
+				}
+				
+				AGAL.mov("vt7.xy","va1.zw");
+				AGAL.abs("vt7.zw","vt7.xy");
+				AGAL.div("vt7.xy","vt7.xy","vt7.zw"); // +1 or -1
+				
+				AGAL.mul("vt7.xy","vt7.xy","vt4.xy"); 
+				AGAL.div("vt7.xy","vt7.xy","vc4.zz"); // x,y/2
+			}else
+			{
+				AGAL.mov("vt7.xy","va1.zw"); //vt8 (sizeX,sizeY)
+			}
+			
+			
+			
+			///////////// rotate
 			AGAL.mul("vt3.x","va2.x","va2.w"); // passTime * rotV 
 			AGAL.add("vt3.x","vt3.x","va2.z"); // rot + rotV * passTime
-			
-			//rotate：new Vector2D( (cos*x) - (sin*y) , (cos*y) + (sin*x) );
+			//new Vector2D( (cos*x) - (sin*y) , (cos*y) + (sin*x) );
 			AGAL.sin("vt3.y","vt3.x");
 			AGAL.cos("vt3.z","vt3.x");
-			AGAL.mul("vt1.x","vt3.z","va1.z"); // cos*x
-			AGAL.mul("vt1.y","vt3.y","va1.w"); // sin*y
-			AGAL.mul("vt1.z","vt3.z","va1.w"); // cos*y
-			AGAL.mul("vt1.w","vt3.y","va1.z"); // sin*x
+			AGAL.mul("vt1.x","vt3.z","vt7.x"); // cos*x
+			AGAL.mul("vt1.y","vt3.y","vt7.y"); // sin*y
+			AGAL.mul("vt1.z","vt3.z","vt7.y"); // cos*y
+			AGAL.mul("vt1.w","vt3.y","vt7.x"); // sin*x
 			
 			AGAL.sub("vt0.y","vt1.x","vt1.y"); //(cos*x) - (sin*y)  
 			AGAL.add("vt0.z","vt1.z","vt1.w"); //(cos*y) + (sin*x) 
 			
 			AGAL.mov("vt2","va0");
 			AGAL.add("vt2.xy","va0.xy","vt0.yz"); //vt2 : pos after rotate
+			
 			// move
 			AGAL.mul("vt4.xyz","va2.xxx","va3.xyz"); // passTime * V
 			AGAL.add("vt2.xy","vt2.xy","vt4.xy"); //vt2 = p + v
@@ -327,18 +383,44 @@ package de.nulldesign.nd2d.effect
 			AGAL.mul("op","vt5","vt0.x");
 			
 			AGAL.sub("v3","vt0.x","vc4.y");
-			AGAL.mov("v0","va4"); //color
 			AGAL.mov("v1","va1"); //uv
+			
+			
+			 
+			AGAL.mov("v0","va4"); //color
+			
+//			var vc1:uint;
+//			var vc2:uint;
+//			var vci:uint;
+//			if(_particleSystem.alphaEffector.bufferData.length > 0)
+//			{
+//				vc1 = 10;
+//				for(vci = 0 ; vci < EffectorBase.GPU_MAX_FRAMES - 1 ; vci++,vc1++)
+//				{
+//					vc2 = vc1 + 1 ;
+//					AGAL.sge("vt6.x","vt0.x","vc"+vc1+".w");
+//					AGAL.slt("vt6.y","vt0.x","vc"+vc2+".w");
+//					AGAL.mul("vt6.x","vt6.x","vt6.y"); // in
+//				}
+//				
+//			}
+			
+			
+
+			
 			return AGAL.code
 		}
 		private function getFragmentShader():String
 		{
 			AGAL.init();
+		
 			AGAL.kil("v3.x");
 			AGAL.tex("ft0","v1","fs0","2d","repeat","nomip");
+	      
 			AGAL.mul("ft0","ft0","v0.xyz");
 			AGAL.mul("ft0","ft0","v0.w");
 			AGAL.mov("oc","ft0");
+			
 			return AGAL.code;
 		}
 		
@@ -361,7 +443,7 @@ package de.nulldesign.nd2d.effect
 		
 
 		
-		private var _commonConst4 : Vector.<Number> = Vector.<Number>([0, 1, 2, 1000]);	
+		private var _commonConst4 : Vector.<Number> = Vector.<Number>([0, 1, 2, 100]);	
 		
 		override protected function prepareForRender(context:Context3D):void
 		{
@@ -369,7 +451,7 @@ package de.nulldesign.nd2d.effect
 			context.setProgram(shader);
 			context.setBlendFactors(blendMode.src, blendMode.dst);
 			
-			context.setTextureAt(0, _texture.getTexture(context));
+			context.setTextureAt(0, _texture.getTexture(context));//fs0
 
 			context.setVertexBufferAt(0,_vertexBuffer,0,Context3DVertexBufferFormat.FLOAT_3); //va0 (x,y,z)
 			context.setVertexBufferAt(1,_vertexBuffer1,0,Context3DVertexBufferFormat.FLOAT_4);//va1 ( u, v, sizeX, sizeY )
@@ -381,6 +463,23 @@ package de.nulldesign.nd2d.effect
 			context.setProgramConstantsFromMatrix(Context3DProgramType.VERTEX, 0, clipSpaceMatrix, true); //vc0~3
 			context.setProgramConstantsFromVector(Context3DProgramType.VERTEX,4,_commonConst4,1);//vc4
 			
+			prepareAffector(context);
+			
+		}
+		
+		private function prepareAffector(context:Context3D):void
+		{
+//			var alphaEffector:AlphaAffector = _particleSystem.alphaEffector; //vc10~12
+//			if(alphaEffector.keyframeCount >0)
+//			{
+//				context.setProgramConstantsFromVector(Context3DProgramType.VERTEX,10,alphaEffector.bufferData, alphaEffector.keyframeCount);
+//			}
+			
+			var sizeEffector:SizeAffector = _particleSystem.sizeAffector; // vc 16 , 17 , 18 , 19
+			if(sizeEffector.keyframeCount > 0 )
+			{
+				context.setProgramConstantsFromVector(Context3DProgramType.VERTEX,16,sizeEffector.bufferData,sizeEffector.keyframeCount);
+			}
 			
 		}
 		
