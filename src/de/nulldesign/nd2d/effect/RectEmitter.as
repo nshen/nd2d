@@ -52,6 +52,8 @@ package de.nulldesign.nd2d.effect
 			newParticle.pos.x += (EmitterRectTo.x - EmitterRectFrom.x) * Math.random() + EmitterRectFrom.x;
 			newParticle.pos.y += (EmitterRectTo.y - EmitterRectFrom.y) * Math.random() + EmitterRectFrom.y;
 //			newParticle.pos.z += (EmitterRectTo.z - EmitterRectFrom.z) * Math.random() + EmitterRectFrom.z;
+			
+			newParticle.startTime = _particleSystem.currentTime;
 		}
 	}
 }

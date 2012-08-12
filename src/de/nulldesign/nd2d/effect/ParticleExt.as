@@ -23,6 +23,8 @@ package de.nulldesign.nd2d.effect
 		public var su : Number = 1.0;
 		public var sv : Number = 1.0;
 		
+		public var startTime:Number = 0 ;
+		
 		public function ParticleExt(index:int)
 		{
 			this.index = index;
@@ -32,7 +34,7 @@ package de.nulldesign.nd2d.effect
 		public function get g() : Number {return ((color & 0x00ff00) >> 8) / 0xff;}
 		public function get b() : Number {return (color & 0x0000ff) / 0xff;}
 		
-		public function reset() : void
+		public function reset():ParticleExt
 		{
 			_remainTime = 0;
 			pastTime = 0;
@@ -47,6 +49,7 @@ package de.nulldesign.nd2d.effect
 			v = 0;
 			pos.setTo(0,0,0);
 			dir.setTo(0,1,0);
+			return this;
 		}
 		
 		public function set remainTime(value : int) : void

@@ -27,7 +27,7 @@ package de.nulldesign.nd2d.effect
 		// vertextBuffers
 		protected var _vertexBuffer:VertexBuffer3D ;		// va0 (x,y,z)
 		protected var _vertexBuffer1:VertexBuffer3D;		// va1(u,v,sizeX,sizeY) 
-		protected var _vertexBuffer2:VertexBuffer3D;		// va2(passtime, lifetime, rot, rotv)
+		protected var _vertexBuffer2:VertexBuffer3D;		// va2(startTime, lifetime, rot, rotv)
 		protected var _vertexBuffer3:VertexBuffer3D;		// va3(Vx, Vy, Vz)
 		protected var _vertexBuffer4:VertexBuffer3D;        // va4(r,g,b,a)
 		
@@ -70,13 +70,23 @@ package de.nulldesign.nd2d.effect
 			_vertexData4 = new Vector.<Number>(_maxVertexNum * 4, true);// (r, g, b, a)
 			
 			_indexData = new Vector.<uint>(_maxIndexNum, true); 
+			for(var index:int = 0 ; index < _particleSystem.maxCapacity ; index++)
+			{
+				_indexData[index *6] = index *4;			// 0 1 2
+				_indexData[index *6+1] = index *4+1;
+				_indexData[index *6+2] = index *4+2;
+				_indexData[index *6+3] = index *4;			// 0 2 3
+				_indexData[index *6+4] = index *4+2;
+				_indexData[index *6+5] = index *4+3;
+			}
+			_indexBufferDirty = true ;
 		}
 		
 
 		
 		private static var tmpVec3 : Vector3D = new Vector3D;
 		
-		public function uploadParticle(newParticle:ParticleExt , updateIndex:Boolean = false):void
+		public function uploadParticle(newParticle:ParticleExt ):void
 		{
 			var index:int = newParticle.index;
 			
@@ -122,24 +132,24 @@ package de.nulldesign.nd2d.effect
 			_vertexBufferDirty1 = true;
 			
 			
-			// va2  (pastTime , lifeTime ,rot,rotVel)
+			// va2  (startTime , lifeTime ,rot,rotVel)
 			var liftTime : int = newParticle.pastTime + newParticle.remainTime
-			_vertexData2[index*16] = newParticle.pastTime;
+			_vertexData2[index*16] = newParticle.startTime;
 			_vertexData2[index*16+1] = liftTime;
 			_vertexData2[index*16+2] = newParticle.rot;
 			_vertexData2[index*16+3] = newParticle.rotVel;
 			
-			_vertexData2[index*16+4] = newParticle.pastTime;
+			_vertexData2[index*16+4] = newParticle.startTime;
 			_vertexData2[index*16+5] = liftTime;
 			_vertexData2[index*16+6] = newParticle.rot;
 			_vertexData2[index*16+7] = newParticle.rotVel;
 			
-			_vertexData2[index*16+8] = newParticle.pastTime;
+			_vertexData2[index*16+8] = newParticle.startTime;
 			_vertexData2[index*16+9] = liftTime;
 			_vertexData2[index*16+10] = newParticle.rot;
 			_vertexData2[index*16+11] = newParticle.rotVel;
 			
-			_vertexData2[index*16+12] = newParticle.pastTime;
+			_vertexData2[index*16+12] = newParticle.startTime;
 			_vertexData2[index*16+13] = liftTime;
 			_vertexData2[index*16+14] = newParticle.rot;
 			_vertexData2[index*16+15] = newParticle.rotVel;
@@ -195,23 +205,12 @@ package de.nulldesign.nd2d.effect
 			
 			_vertexBufferDirty4 = true;
 			
-			if(updateIndex)
-			{
-				_indexData[index *6] = index *4;			// 0 1 2
-				_indexData[index *6+1] = index *4+1;
-				_indexData[index *6+2] = index *4+2;
-				_indexData[index *6+3] = index *4;			// 0 2 3
-				_indexData[index *6+4] = index *4+2;
-				_indexData[index *6+5] = index *4+3;
-				
-				_indexBufferDirty = true ;
-			}
+	
 		}
 		
 		override public function render(context:Context3D, faceList:Vector.<Face>, startTri:uint, numTris:uint):void
 		{
-			if(_particleSystem.maxLiveIndex < 0 )
-				return;
+			
 			generateBufferData(context, faceList);
 			prepareForRender(context);
 			context.drawTriangles(_indexBuffer);
@@ -221,21 +220,20 @@ package de.nulldesign.nd2d.effect
 		override protected function generateBufferData(context:Context3D, faceList:Vector.<Face>):void
 		{
 			
-			var _particles : Vector.<ParticleExt> = _particleSystem.particles;
-			var p:ParticleExt;
-			for(var i:int = 0; i<=_particleSystem.maxLiveIndex; i++)
-			{
-				p = _particles[i];				
-				_vertexData2[i*16] = p.pastTime;
-				_vertexData2[i*16+4] = p.pastTime;
-				_vertexData2[i*16+8] = p.pastTime;
-				_vertexData2[i*16+12] = p.pastTime;
-			}
-			_vertexBufferDirty2 = true ;
-			
-			
-			
-			var maxLiveVertexNum:Number = (_particleSystem.maxLiveIndex + 1) * 4; 
+//			var _particles : Vector.<ParticleExt> = _particleSystem.particles;
+//			var p:ParticleExt;
+//			for(var i:int = 0; i < _particleSystem.maxCapacity; i++)
+//			{
+//				p = _particles[i];				
+//				_vertexData2[i*16] =  p.startTime;
+//				_vertexData2[i*16+4] =  p.startTime;
+//				_vertexData2[i*16+8] =  p.startTime;
+//				_vertexData2[i*16+12] =  p.startTime;
+//			}
+//			_vertexBufferDirty2 = true ;
+//			
+//			trace(_particles[0].pastTime , _particleSystem.currentTime - _particles[0].startTime)
+//			
 			
 			if (_vertexBufferDirty || !_vertexBuffer) 
 			{
@@ -276,7 +274,7 @@ package de.nulldesign.nd2d.effect
 			{
 				_indexBuffer ||= context.createIndexBuffer(_maxIndexNum);
 				_indexBuffer.uploadFromVector(_indexData, 0, _maxIndexNum);
-				numTris = int( (_particleSystem.maxLiveIndex + 1) * 0.5);
+				numTris = int( _particleSystem.maxCapacity * 0.5);
 				_indexBufferDirty = false;
 			}
 			
@@ -312,7 +310,8 @@ package de.nulldesign.nd2d.effect
 			
 			
 			AGAL.init();
-			AGAL.div("vt0.x" , "va2.x" , "va2.y");  
+			AGAL.sub("vt0","vc4.w","va2.x");
+			AGAL.div("vt0.x" , "vt0.x" , "va2.y");  
 			AGAL.sat("vt0.x","vt0.x");// vt0.x =  passtime / lifetime
 			
 			//sizeAffector: vc 16 , 17 , 18 , 19 [x,y,0,percent]
@@ -357,7 +356,7 @@ package de.nulldesign.nd2d.effect
 			
 			
 			///////////// rotate
-			AGAL.mul("vt3.x","va2.x","va2.w"); // passTime * rotV 
+			AGAL.mul("vt3.x","vt0.w","va2.w"); // passTime * rotV 
 			AGAL.add("vt3.x","vt3.x","va2.z"); // rot + rotV * passTime
 			//new Vector2D( (cos*x) - (sin*y) , (cos*y) + (sin*x) );
 			AGAL.sin("vt3.y","vt3.x");
@@ -374,12 +373,12 @@ package de.nulldesign.nd2d.effect
 			AGAL.add("vt2.xy","va0.xy","vt0.yz"); //vt2 : pos after rotate
 			
 			// move
-			AGAL.mul("vt4.xyz","va2.xxx","va3.xyz"); // passTime * V
+			AGAL.mul("vt4.xyz","vt0.www","va3.xyz"); // passTime * V
 			AGAL.add("vt2.xy","vt2.xy","vt4.xy"); //vt2 = p + v
 			
 			AGAL.m44("vt5","vt2","vc0");
 			
-			AGAL.slt("vt0.x","va2.x","va2.y"); // if (die) vt0.x =0
+			AGAL.slt("vt0.x","vt0.w","va2.y"); // if (die) vt0.x =0
 			AGAL.mul("op","vt5","vt0.x");
 			
 			AGAL.sub("v3","vt0.x","vc4.y");
@@ -461,6 +460,7 @@ package de.nulldesign.nd2d.effect
 			
 			refreshClipspaceMatrix();
 			context.setProgramConstantsFromMatrix(Context3DProgramType.VERTEX, 0, clipSpaceMatrix, true); //vc0~3
+			_commonConst4[3] = _particleSystem.currentTime
 			context.setProgramConstantsFromVector(Context3DProgramType.VERTEX,4,_commonConst4,1);//vc4
 			
 			prepareAffector(context);

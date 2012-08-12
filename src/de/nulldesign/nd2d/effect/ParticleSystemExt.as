@@ -9,6 +9,7 @@ package de.nulldesign.nd2d.effect
 	import de.nulldesign.nd2d.materials.texture.Texture2D;
 	
 	import flash.display3D.Context3D;
+	import flash.utils.getTimer;
 
 	public class ParticleSystemExt extends Node2D
 	{
@@ -21,15 +22,28 @@ package de.nulldesign.nd2d.effect
 		
 		protected var _maxCapacity:uint = 0 ;
 		protected var _lastIndex:int = -1;
-		protected var _maxLiveIndex:int = -1;
 		protected var _emitting:Boolean = false;
+		
+		public var currentTime:Number = 0 ;
+		public var startTime:Number = 0 ;
 		
 		public function ParticleSystemExt(maxCapacity:uint , emitter:ParticleEmitterBase , texture:Texture2D)
 		{
 			_maxCapacity = maxCapacity ;
-			_particles = new Vector.<ParticleExt>(_maxCapacity, true);
 			_emitter = emitter;
 			_emitter.particleSystem = this;
+			init(texture)
+		
+		}
+		
+		protected function init(texture:Texture2D):void
+		{
+			_particles = new Vector.<ParticleExt>(_maxCapacity, true);
+			for(var i:int = 0 ; i < _maxCapacity ; i ++ )
+			{
+				_particles[i] = new ParticleExt(i);
+				
+			}
 			_material = new ParticleSystemExtMaterial(this,texture);
 		}
 		
@@ -48,10 +62,7 @@ package de.nulldesign.nd2d.effect
 			return _particles;
 		}
 		
-		public function get maxLiveIndex():int
-		{
-			return _maxLiveIndex;
-		}
+
 
 		public function get maxCapacity():uint
 		{
@@ -65,19 +76,8 @@ package de.nulldesign.nd2d.effect
 		{
 			if(++_lastIndex >= _maxCapacity )
 				_lastIndex = 0 ; 
-			if(_maxLiveIndex < _maxCapacity - 1)
-				_maxLiveIndex ++ ;
-			
-			if(_particles[_lastIndex])
-			{
-				_particles[_lastIndex].reset();
-			}else
-			{
-				_particles[_lastIndex] = new ParticleExt(_lastIndex);
-				_material.uploadParticle(_particles[_lastIndex],true);
-			}
-			
-			return _particles[_lastIndex];
+
+			return _particles[_lastIndex].reset();
 		}
 		
 		public function stop(immediately : Boolean) : void
@@ -85,7 +85,7 @@ package de.nulldesign.nd2d.effect
 			_emitting = false;
 			if(immediately)
 			{	
-				for(var i:int = 0 ; i<= _maxLiveIndex ; i++)
+				for(var i:int = 0 ; i< _maxCapacity ; i++)
 				{
 					_particles[i].die();
 				}
@@ -95,23 +95,19 @@ package de.nulldesign.nd2d.effect
 		public function start() : void 
 		{
 			_emitting = true;
+			startTime = getTimer();
 		}
 		
 
 		public function uploadParticle(newParticle:ParticleExt):void
 		{
-			_material.uploadParticle(newParticle,false);
+			_material.uploadParticle(newParticle);
 		}
 		
 		override protected function step(elapsed:Number):void 
 		{
-			for(var i:int = 0 ; i<= _maxLiveIndex ; i ++)
-			{
-				if(!_particles[i].isDead())
-				{
-					_particles[i].update(elapsed);
-				}
-			}
+			currentTime  = (getTimer() - startTime) * 0.001; 
+
 			
 			if(_emitter && _emitting)
 				_emitter.update(elapsed);
@@ -126,11 +122,13 @@ package de.nulldesign.nd2d.effect
 		
 		override protected function draw(context:Context3D, camera:Camera2D):void
 		{
+			if(_maxCapacity <= 0 )
+				return;
 			
 			_material.blendMode = blendMode;
 			_material.modelMatrix = worldModelMatrix;
 			_material.viewProjectionMatrix = camera.getViewProjectionMatrix(false);
-			_material.render(context, null, 0,(_maxLiveIndex+1) * 2); //dont use facelist
+			_material.render(context, null, 0,_maxCapacity * 2); //dont use facelist
 		}
 		
 		override public function dispose():void 
