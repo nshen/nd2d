@@ -37,7 +37,7 @@ package de.nulldesign.nd2d.effect
 			newParticle.alpha = alpha + alphaRange * Math.random();
 			newParticle.u = 0;
 			newParticle.v = 0;
-			newParticle.remainTime = lifeTime + lifeTimeRange * Math.random();
+			newParticle.lifeTime = lifeTime + lifeTimeRange * Math.random();
 			newParticle.dir.x = directionFrom.x * Math.random() + directionTo.x * Math.random();
 			newParticle.dir.y = directionFrom.y * Math.random() + directionTo.y * Math.random();
 			newParticle.dir.z = directionFrom.z * Math.random() + directionTo.z * Math.random();

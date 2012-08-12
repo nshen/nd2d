@@ -87,7 +87,7 @@ package de.nulldesign.nd2d.effect
 			{	
 				for(var i:int = 0 ; i< _maxCapacity ; i++)
 				{
-					_particles[i].die();
+//					_particles[i].die();
 				}
 			}
 		}

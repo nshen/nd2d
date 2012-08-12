@@ -6,8 +6,8 @@ package de.nulldesign.nd2d.effect
 	{
 		public var index : int;
 		public var noDead : Boolean = false;
-		private var _remainTime:Number;
-		public var pastTime:Number;
+//		private var _remainTime:Number;
+//		public var pastTime:Number;
 		public var pos : Vector3D = new Vector3D;
 		public var dir : Vector3D = new Vector3D;
 		public var vel : Number = 0;
@@ -24,6 +24,7 @@ package de.nulldesign.nd2d.effect
 		public var sv : Number = 1.0;
 		
 		public var startTime:Number = 0 ;
+		public var lifeTime:Number = 0 ;
 		
 		public function ParticleExt(index:int)
 		{
@@ -36,8 +37,11 @@ package de.nulldesign.nd2d.effect
 		
 		public function reset():ParticleExt
 		{
-			_remainTime = 0;
-			pastTime = 0;
+			startTime = 0;
+			lifeTime = 0;
+			
+//			_remainTime = 0;
+//			pastTime = 0;
 			sizeX = 0;
 			sizeY = 0;
 			vel = 0;
@@ -52,24 +56,24 @@ package de.nulldesign.nd2d.effect
 			return this;
 		}
 		
-		public function set remainTime(value : int) : void
-		{
-			_remainTime = value;
-			pastTime = 0;
-		}
-		public function get remainTime() : int {return _remainTime;}
-		public function isDead() : Boolean {return _remainTime <= 0 && !noDead ; } 
-		public function die() : void { pastTime += _remainTime; _remainTime = 0; noDead = false; }
+//		public function set remainTime(value : int) : void
+//		{
+//			_remainTime = value;
+//			pastTime = 0;
+//		}
+//		public function get remainTime() : int {return _remainTime;}
+//		public function isDead() : Boolean {return _remainTime <= 0 && !noDead ; } 
+//		public function die() : void { pastTime += _remainTime; _remainTime = 0; noDead = false; }
 		
 		public function update(elapsed:Number) : void
 		{
-			_remainTime -= elapsed;
-			pastTime += elapsed;
-			if(noDead && _remainTime<=0)
-			{
-				_remainTime = pastTime + _remainTime;
-				pastTime = 0;
-			}
+//			_remainTime -= elapsed;
+//			pastTime += elapsed;
+//			if(noDead && _remainTime<=0)
+//			{
+//				_remainTime = pastTime + _remainTime;
+//				pastTime = 0;
+//			}
 		}
 	}
 }

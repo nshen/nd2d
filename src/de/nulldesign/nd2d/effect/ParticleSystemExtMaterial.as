@@ -133,24 +133,24 @@ package de.nulldesign.nd2d.effect
 			
 			
 			// va2  (startTime , lifeTime ,rot,rotVel)
-			var liftTime : int = newParticle.pastTime + newParticle.remainTime
+//			var liftTime : int = newParticle.pastTime + newParticle.remainTime
 			_vertexData2[index*16] = newParticle.startTime;
-			_vertexData2[index*16+1] = liftTime;
+			_vertexData2[index*16+1] = newParticle.lifeTime;
 			_vertexData2[index*16+2] = newParticle.rot;
 			_vertexData2[index*16+3] = newParticle.rotVel;
 			
 			_vertexData2[index*16+4] = newParticle.startTime;
-			_vertexData2[index*16+5] = liftTime;
+			_vertexData2[index*16+5] = newParticle.lifeTime;
 			_vertexData2[index*16+6] = newParticle.rot;
 			_vertexData2[index*16+7] = newParticle.rotVel;
 			
 			_vertexData2[index*16+8] = newParticle.startTime;
-			_vertexData2[index*16+9] = liftTime;
+			_vertexData2[index*16+9] = newParticle.lifeTime;
 			_vertexData2[index*16+10] = newParticle.rot;
 			_vertexData2[index*16+11] = newParticle.rotVel;
 			
 			_vertexData2[index*16+12] = newParticle.startTime;
-			_vertexData2[index*16+13] = liftTime;
+			_vertexData2[index*16+13] = newParticle.lifeTime;
 			_vertexData2[index*16+14] = newParticle.rot;
 			_vertexData2[index*16+15] = newParticle.rotVel;
 			
