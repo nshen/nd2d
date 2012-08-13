@@ -50,10 +50,6 @@ package de.nulldesign.nd2d.effect
 		
 		public function set particleSystem(value:ParticleSystemExt) : void
 		{
-			if(_particleSystem)
-			{	
-				_particleSystem.emitter = null;
-			}
 			_particleSystem = value;
 		}
 	}

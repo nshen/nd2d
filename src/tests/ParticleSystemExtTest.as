@@ -49,12 +49,12 @@ package tests {
 		private var particleClass:Class;
 		
 		private var particles:ParticleSystemExt;
-		
-		private var blah:Sprite;
+		private var emitter:RectEmitter;
+		private var emitter2:RectEmitter;
 		
 		public function ParticleSystemExtTest() {
 			
-			var emitter:RectEmitter = new RectEmitter();
+			emitter = new RectEmitter();
 			emitter.color = 0x222222;
 			emitter.colorRange = 0xaaaaaa;
 			emitter.directionFrom.setTo(-500,0,0);
@@ -70,22 +70,49 @@ package tests {
 			emitter.vel = 200;
 			emitter.rotVel = 5;
 			emitter.rotRange = 10;
-			//			emitter.alpha = 0.9
 			
-			particles = new ParticleSystemExt(1000,emitter,Texture2D.textureFromBitmapData(new particleClass().bitmapData));
+			emitter2 = new RectEmitter();
+			emitter2.color = 0x000000;
+			emitter2.colorRange = 0xffffff;
+			emitter2.directionFrom.setTo(-500,0,0);
+			emitter2.directionTo.setTo(600,0,200);
+			emitter2.emitPeriod = 0;
+			emitter2.emitTime = 0;
+			emitter2.emitRate = 800;
+			emitter2.EmitterRectFrom.setTo(-200,-200,0);
+			emitter2.EmitterRectTo.setTo(200,200,0)
+			emitter2.sizeRange = 100
+			emitter2.sizeX = 10;
+			emitter2.sizeY = 10;
+			emitter2.vel = 200;
+			emitter2.rotVel = 5;
+			emitter2.rotRange = 10;
+			
+			particles = new ParticleSystemExt(Texture2D.textureFromBitmapData(new particleClass().bitmapData) ,1000);
+			particles.emitter = emitter;
 			addChild(particles);
 			
 //			particles.sizeAffector.addKeyFrame(0,0,0);
 //			particles.sizeAffector.addKeyFrame(0.6,90,90);
-			particles.sizeAffector.addKeyFrame(0.5,200,200);
+//			particles.sizeAffector.addKeyFrame(0.5,200,200);
 //			particles.sizeAffector.addKeyFrame(1,0,0);
 			
 			particles.start();
 			particles.blendMode = BlendModePresets.ADD_PREMULTIPLIED_ALPHA;
 			
-			
+			addEventListener(MouseEvent.CLICK , onMouseClick);
 		}
 		
+		protected function onMouseClick(event:MouseEvent):void
+		{
+			if(particles.emitter == emitter)
+			{
+				particles.emitter = emitter2;
+			}else
+			{
+				particles.emitter = emitter;
+			}
+		}		
 		
 		
 		

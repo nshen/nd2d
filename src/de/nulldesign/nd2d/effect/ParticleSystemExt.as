@@ -27,11 +27,9 @@ package de.nulldesign.nd2d.effect
 		public var currentTime:Number = 0 ;
 		public var startTime:Number = 0 ;
 		
-		public function ParticleSystemExt(maxCapacity:uint , emitter:ParticleEmitterBase , texture:Texture2D)
+		public function ParticleSystemExt( texture:Texture2D ,maxCapacity:uint )
 		{
 			_maxCapacity = maxCapacity ;
-			_emitter = emitter;
-			_emitter.particleSystem = this;
 			init(texture)
 		
 		}
@@ -42,7 +40,6 @@ package de.nulldesign.nd2d.effect
 			for(var i:int = 0 ; i < _maxCapacity ; i ++ )
 			{
 				_particles[i] = new ParticleExt(i);
-				
 			}
 			_material = new ParticleSystemExtMaterial(this,texture);
 		}
@@ -69,7 +66,15 @@ package de.nulldesign.nd2d.effect
 			return _maxCapacity;
 		}
 
-		public function set emitter(value : ParticleEmitterBase) : void {_emitter = value;}
+		public function set emitter(value : ParticleEmitterBase):void
+		{
+			if(_emitter)
+			{
+				_emitter.particleSystem = null ;
+			}
+			_emitter = value;
+			_emitter.particleSystem = this;
+		}
 		public function get emitter() : ParticleEmitterBase {return _emitter;}
 		
 		public function generateParticle():ParticleExt
