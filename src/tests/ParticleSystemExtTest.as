@@ -64,9 +64,9 @@ package tests {
 			emitter.emitRate = 100;
 			emitter.EmitterRectFrom.setTo(-200,-200,0);
 			emitter.EmitterRectTo.setTo(200,200,0)
-			emitter.sizeRange = 15
 			emitter.sizeX = 10;
 			emitter.sizeY = 10;
+			emitter.sizeRange = 500;
 			emitter.vel = 200;
 			emitter.rotVel = 5;
 			emitter.rotRange = 10;
@@ -81,9 +81,9 @@ package tests {
 			emitter2.emitRate = 800;
 			emitter2.EmitterRectFrom.setTo(-200,-200,0);
 			emitter2.EmitterRectTo.setTo(200,200,0)
-			emitter2.sizeRange = 100
 			emitter2.sizeX = 10;
 			emitter2.sizeY = 10;
+			emitter2.sizeRange = 50
 			emitter2.vel = 200;
 			emitter2.rotVel = 5;
 			emitter2.rotRange = 10;

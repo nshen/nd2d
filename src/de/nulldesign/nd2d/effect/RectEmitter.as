@@ -44,8 +44,10 @@ package de.nulldesign.nd2d.effect
 			newParticle.dir.normalize();
 			newParticle.vel = vel + velRange * Math.random();
 			var sizeRand : Number = sizeRange * Math.random();
-			newParticle.sizeX = sizeX + sizeRand;
-			newParticle.sizeY = sizeY + sizeRand;
+			newParticle.startSizeX = sizeX;
+			newParticle.endSizeX = sizeX + sizeRand;
+			newParticle.startSizeY = sizeY;
+			newParticle.endSizeY = sizeY + sizeRand;
 			newParticle.rot = rot +  rotRange * Math.random();
 			newParticle.rotVel = rotVel + rotVelRange * Math.random();
 			

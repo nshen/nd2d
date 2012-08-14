@@ -108,7 +108,7 @@ package
 
 			stage.scaleMode = StageScaleMode.NO_SCALE;
 			stage.align = StageAlign.TOP_LEFT;
-			enableErrorChecking = false;
+			enableErrorChecking = true;
 
 			scenes.push(ParticleSystemExtTest);
 			scenes.push(SideScrollerTest);

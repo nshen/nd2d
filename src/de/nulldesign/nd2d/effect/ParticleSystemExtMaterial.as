@@ -30,6 +30,7 @@ package de.nulldesign.nd2d.effect
 		protected var _vertexBuffer2:VertexBuffer3D;		// va2(startTime, lifetime, rot, rotv)
 		protected var _vertexBuffer3:VertexBuffer3D;		// va3(Vx, Vy, Vz)
 		protected var _vertexBuffer4:VertexBuffer3D;        // va4(r,g,b,a)
+		protected var _vertexBuffer5:VertexBuffer3D;       //uv
 		
 		// dirty flags
 		protected var _vertexBufferDirty:Boolean;
@@ -37,6 +38,7 @@ package de.nulldesign.nd2d.effect
 		protected var _vertexBufferDirty2:Boolean;
 		protected var _vertexBufferDirty3:Boolean;
 		protected var _vertexBufferDirty4:Boolean;
+		protected var _vertexBufferDirty5:Boolean;
 		protected var _programDrity:Boolean = true ;
 		
 		private var _vertexData0 : Vector.<Number>;			// vertex
@@ -44,6 +46,7 @@ package de.nulldesign.nd2d.effect
 		private var _vertexData2 : Vector.<Number>;			// vertex2
 		private var _vertexData3 : Vector.<Number>;			// vertex3
 		private var _vertexData4 : Vector.<Number>;			// vertex4
+		private var _vertexData5 : Vector.<Number>;			// vertex4
 		
 		private var _indexData : Vector.<uint>;				// index
 		
@@ -64,10 +67,11 @@ package de.nulldesign.nd2d.effect
 			_maxIndexNum = _particleSystem.maxCapacity * 6;			// six index
 			
 			_vertexData0 = new Vector.<Number>(_maxVertexNum * 3, true);	// (x,y,z)
-			_vertexData1 = new Vector.<Number>(_maxVertexNum * 4, true); // ( u, v, sizeX, sizeY )
-			_vertexData2 = new Vector.<Number>(_maxVertexNum * 4, true); //(passtime, lifetime, rot, rotv)
+			_vertexData1 = new Vector.<Number>(_maxVertexNum * 4, true); // ( startSizeX, startSizeY, endSizeX, endSizeY )
+			_vertexData2 = new Vector.<Number>(_maxVertexNum * 4, true); //(startTime, lifetime, rot, rotv)
 			_vertexData3 = new Vector.<Number>(_maxVertexNum * 4, true); //(Vx, Vy, Vz)
 			_vertexData4 = new Vector.<Number>(_maxVertexNum * 4, true);// (r, g, b, a)
+			_vertexData5 = new Vector.<Number>(_maxVertexNum * 4, true);// (u, v, 0, 0)
 			
 			_indexData = new Vector.<uint>(_maxIndexNum, true); 
 			for(var index:int = 0 ; index < _particleSystem.maxCapacity ; index++)
@@ -86,7 +90,7 @@ package de.nulldesign.nd2d.effect
 		
 		private static var tmpVec3 : Vector3D = new Vector3D;
 		
-		public function uploadParticle(newParticle:ParticleExt ):void
+		public function updateParticle(newParticle:ParticleExt ):void
 		{
 			var index:int = newParticle.index;
 			
@@ -109,25 +113,31 @@ package de.nulldesign.nd2d.effect
 			_vertexBufferDirty = true ;
 			
 			// va1 uv and size
-			_vertexData1[index*16] = 0;
-			_vertexData1[index*16+1] = 0;
-			_vertexData1[index*16+2] = -newParticle.sizeX/2;
-			_vertexData1[index*16+3] = newParticle.sizeY/2;
+			var halfStartSizeX:Number = newParticle.startSizeX * 0.5;
+			var halfStartSizeY:Number = newParticle.startSizeY * 0.5;
+			var halfEndSizeX:Number = newParticle.endSizeX * 0.5;
+			var halfEndSizeY:Number = newParticle.endSizeY * 0.5;
 			
-			_vertexData1[index*16+4] = 1;
-			_vertexData1[index*16+5] = 0;
-			_vertexData1[index*16+6] = newParticle.sizeX/2;
-			_vertexData1[index*16+7] = newParticle.sizeY/2;
 			
-			_vertexData1[index*16+8] = 1;
-			_vertexData1[index*16+9] = 1;
-			_vertexData1[index*16+10] = newParticle.sizeX/2;
-			_vertexData1[index*16+11] = -newParticle.sizeY/2;
+			_vertexData1[index*16] = -halfStartSizeX;
+			_vertexData1[index*16+1] = halfStartSizeY;
+			_vertexData1[index*16+2] = -halfEndSizeX;
+			_vertexData1[index*16+3] = halfEndSizeY;
 			
-			_vertexData1[index*16+12] = 0;
-			_vertexData1[index*16+13] = 1;
-			_vertexData1[index*16+14] = -newParticle.sizeX/2;
-			_vertexData1[index*16+15] = -newParticle.sizeY/2;
+			_vertexData1[index*16+4] = halfStartSizeX;
+			_vertexData1[index*16+5] = halfStartSizeY;
+			_vertexData1[index*16+6] = halfEndSizeX;
+			_vertexData1[index*16+7] = halfEndSizeY;
+			
+			_vertexData1[index*16+8] = halfStartSizeX;
+			_vertexData1[index*16+9] = -halfStartSizeY;
+			_vertexData1[index*16+10] = halfEndSizeX;
+			_vertexData1[index*16+11] = -halfEndSizeY;
+			
+			_vertexData1[index*16+12] = -halfStartSizeX;
+			_vertexData1[index*16+13] = -halfStartSizeY;
+			_vertexData1[index*16+14] = -halfEndSizeX;
+			_vertexData1[index*16+15] = -halfEndSizeY;
 			
 			_vertexBufferDirty1 = true;
 			
@@ -205,7 +215,28 @@ package de.nulldesign.nd2d.effect
 			
 			_vertexBufferDirty4 = true;
 			
-	
+			// va5 uv
+			_vertexData5[index*16] = 0;
+			_vertexData5[index*16+1] = 0;
+			_vertexData5[index*16+2] = 0;
+			_vertexData5[index*16+3] = 0;
+			
+			_vertexData5[index*16+4] = 1;
+			_vertexData5[index*16+5] = 0;
+			_vertexData5[index*16+6] = 0;
+			_vertexData5[index*16+7] = 0;
+			
+			_vertexData5[index*16+8] = 1;
+			_vertexData5[index*16+9] = 1;
+			_vertexData5[index*16+10] = 0;
+			_vertexData5[index*16+11] = 0;
+			
+			_vertexData5[index*16+12] = 0;
+			_vertexData5[index*16+13] = 1;
+			_vertexData5[index*16+14] = 0;
+			_vertexData5[index*16+15] = 0;
+			
+			_vertexBufferDirty5 = true;
 		}
 		
 		override public function render(context:Context3D, faceList:Vector.<Face>, startTri:uint, numTris:uint):void
@@ -220,20 +251,6 @@ package de.nulldesign.nd2d.effect
 		override protected function generateBufferData(context:Context3D, faceList:Vector.<Face>):void
 		{
 			
-//			var _particles : Vector.<ParticleExt> = _particleSystem.particles;
-//			var p:ParticleExt;
-//			for(var i:int = 0; i < _particleSystem.maxCapacity; i++)
-//			{
-//				p = _particles[i];				
-//				_vertexData2[i*16] =  p.startTime;
-//				_vertexData2[i*16+4] =  p.startTime;
-//				_vertexData2[i*16+8] =  p.startTime;
-//				_vertexData2[i*16+12] =  p.startTime;
-//			}
-//			_vertexBufferDirty2 = true ;
-//			
-//			trace(_particles[0].pastTime , _particleSystem.currentTime - _particles[0].startTime)
-//			
 			
 			if (_vertexBufferDirty || !_vertexBuffer) 
 			{
@@ -268,7 +285,14 @@ package de.nulldesign.nd2d.effect
 				_vertexBuffer4 ||= context.createVertexBuffer(_maxVertexNum, 4);
 				_vertexBuffer4.uploadFromVector( _vertexData4, 0, _maxVertexNum);
 				_vertexBufferDirty4 = false;
-			}			
+			}		
+			
+			if (_vertexBufferDirty5 || !_vertexBuffer5) 
+			{
+				_vertexBuffer5 ||= context.createVertexBuffer(_maxVertexNum, 4);
+				_vertexBuffer5.uploadFromVector( _vertexData5, 0, _maxVertexNum);
+				_vertexBufferDirty5 = false;
+			}		
 			
 			if (_indexBufferDirty || !_indexBuffer) 
 			{
@@ -292,6 +316,7 @@ package de.nulldesign.nd2d.effect
 		 * va2		(passtime, lifetime, rot, rotv)
 		 * va3		(Vx,Vy,Vz)
 		 * va4		(r,g,b,a) 
+		 * va5      (uv)
 		 * 
 		 * vt0     (passtime / lifetime,null,null,null)
 		 * vt1     (cos*x,sin*y,cos*y,sin*x)
@@ -350,7 +375,8 @@ package de.nulldesign.nd2d.effect
 				AGAL.div("vt7.xy","vt7.xy","vc4.zz"); // x,y/2
 			}else
 			{
-				AGAL.mov("vt7.xy","va1.zw"); //vt8 (sizeX,sizeY)
+				AGAL.lerp("vt7.xy","va1.xy","va1.zw","vt0.x");
+//				AGAL.mov("vt7.xy","va1.zw"); //vt8 (sizeX,sizeY)
 			}
 			
 			
@@ -382,7 +408,7 @@ package de.nulldesign.nd2d.effect
 			AGAL.mul("op","vt5","vt0.x");
 			
 			AGAL.sub("v3","vt0.x","vc4.y");
-			AGAL.mov("v1","va1"); //uv
+			AGAL.mov("v1","va5"); //uv
 			
 			
 			 
@@ -457,6 +483,7 @@ package de.nulldesign.nd2d.effect
 			context.setVertexBufferAt(2,_vertexBuffer2,0,Context3DVertexBufferFormat.FLOAT_4); //va2  (pastTime , lifeTime ,rot,rotVel)
 			context.setVertexBufferAt(3,_vertexBuffer3,0,Context3DVertexBufferFormat.FLOAT_4); //va3 V (x,y,z)
 			context.setVertexBufferAt(4,_vertexBuffer4,0,Context3DVertexBufferFormat.FLOAT_4); //va4 (r, g, b, a)
+			context.setVertexBufferAt(5,_vertexBuffer5,0,Context3DVertexBufferFormat.FLOAT_4); //va5 (r, g, b, a)
 			
 			refreshClipspaceMatrix();
 			context.setProgramConstantsFromMatrix(Context3DProgramType.VERTEX, 0, clipSpaceMatrix, true); //vc0~3

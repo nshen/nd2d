@@ -11,8 +11,8 @@ package de.nulldesign.nd2d.effect
 		public var pos : Vector3D = new Vector3D;
 		public var dir : Vector3D = new Vector3D;
 		public var vel : Number = 0;
-		public var sizeX : Number  = 0;
-		public var sizeY : Number = 0;
+//		public var sizeX : Number  = 0;
+//		public var sizeY : Number = 0;
 		
 		public var rot : Number = 0;
 		public var rotVel : Number = 0;
@@ -25,6 +25,11 @@ package de.nulldesign.nd2d.effect
 		
 		public var startTime:Number = 0 ;
 		public var lifeTime:Number = 0 ;
+		
+		public var startSizeX:Number = 0;
+		public var startSizeY:Number = 0;
+		public var endSizeX:Number = 0;
+		public var endSizeY:Number = 0;
 		
 		public function ParticleExt(index:int)
 		{
@@ -42,8 +47,8 @@ package de.nulldesign.nd2d.effect
 			
 //			_remainTime = 0;
 //			pastTime = 0;
-			sizeX = 0;
-			sizeY = 0;
+//			sizeX = 0;
+//			sizeY = 0;
 			vel = 0;
 			rot = 0;
 			rotVel = 0;
