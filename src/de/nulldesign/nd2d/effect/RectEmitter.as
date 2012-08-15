@@ -32,11 +32,9 @@ package de.nulldesign.nd2d.effect
 		} 
 		
 		override protected function initParticle(newParticle:ParticleExt):void
-		{
+		{ 
 			newParticle.color = color + colorRange * Math.random();
 			newParticle.alpha = alpha + alphaRange * Math.random();
-			newParticle.u = 0;
-			newParticle.v = 0;
 			newParticle.lifeTime = lifeTime + lifeTimeRange * Math.random();
 			newParticle.dir.x = directionFrom.x * Math.random() + directionTo.x * Math.random();
 			newParticle.dir.y = directionFrom.y * Math.random() + directionTo.y * Math.random();
@@ -44,10 +42,8 @@ package de.nulldesign.nd2d.effect
 			newParticle.dir.normalize();
 			newParticle.vel = vel + velRange * Math.random();
 			var sizeRand : Number = sizeRange * Math.random();
-			newParticle.startSizeX = sizeX;
-			newParticle.endSizeX = sizeX + sizeRand;
-			newParticle.startSizeY = sizeY;
-			newParticle.endSizeY = sizeY + sizeRand;
+			newParticle.startSizeX = newParticle.endSizeX = sizeX + sizeRand;
+			newParticle.startSizeY = newParticle.endSizeY = sizeY + sizeRand;
 			newParticle.rot = rot +  rotRange * Math.random();
 			newParticle.rotVel = rotVel + rotVelRange * Math.random();
 			

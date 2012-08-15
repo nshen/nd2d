@@ -55,18 +55,18 @@ package tests {
 		public function ParticleSystemExtTest() {
 			
 			emitter = new RectEmitter();
-			emitter.color = 0x222222;
-			emitter.colorRange = 0xaaaaaa;
+//			emitter.color = 0x222222;
+//			emitter.colorRange = 0xaaaaaa;
 			emitter.directionFrom.setTo(-500,0,0);
 			emitter.directionTo.setTo(600,0,200);
 			emitter.emitPeriod = 5;
-			emitter.emitTime = 1;
+			emitter.emitTime = 2;
 			emitter.emitRate = 100;
 			emitter.EmitterRectFrom.setTo(-200,-200,0);
 			emitter.EmitterRectTo.setTo(200,200,0)
 			emitter.sizeX = 10;
 			emitter.sizeY = 10;
-			emitter.sizeRange = 500;
+			emitter.sizeRange = 10;
 			emitter.vel = 200;
 			emitter.rotVel = 5;
 			emitter.rotRange = 10;

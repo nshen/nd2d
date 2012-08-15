@@ -20,19 +20,16 @@ package de.nulldesign.nd2d.effect
 	public class ParticleSystemExtMaterial extends AMaterial
 	{
 		
-		// index buffer
 		protected var _indexBuffer:IndexBuffer3D;
 		protected var _indexBufferDirty:Boolean;
 		
-		// vertextBuffers
 		protected var _vertexBuffer:VertexBuffer3D ;		// va0 (x,y,z)
-		protected var _vertexBuffer1:VertexBuffer3D;		// va1(u,v,sizeX,sizeY) 
-		protected var _vertexBuffer2:VertexBuffer3D;		// va2(startTime, lifetime, rot, rotv)
-		protected var _vertexBuffer3:VertexBuffer3D;		// va3(Vx, Vy, Vz)
-		protected var _vertexBuffer4:VertexBuffer3D;        // va4(r,g,b,a)
-		protected var _vertexBuffer5:VertexBuffer3D;       //uv
+		protected var _vertexBuffer1:VertexBuffer3D;		// va1 start end( size)
+		protected var _vertexBuffer2:VertexBuffer3D;		// va2 (startTime, lifetime, rot, rotv)
+		protected var _vertexBuffer3:VertexBuffer3D;		// va3 (Vx, Vy, Vz)
+		protected var _vertexBuffer4:VertexBuffer3D;        // va4 va6 start,end(r,g,b,a)
+		protected var _vertexBuffer5:VertexBuffer3D;        // uv
 		
-		// dirty flags
 		protected var _vertexBufferDirty:Boolean;
 		protected var _vertexBufferDirty1:Boolean;
 		protected var _vertexBufferDirty2:Boolean;
@@ -41,14 +38,14 @@ package de.nulldesign.nd2d.effect
 		protected var _vertexBufferDirty5:Boolean;
 		protected var _programDrity:Boolean = true ;
 		
-		private var _vertexData0 : Vector.<Number>;			// vertex
-		private var _vertexData1 : Vector.<Number>;			// vertex1
-		private var _vertexData2 : Vector.<Number>;			// vertex2
-		private var _vertexData3 : Vector.<Number>;			// vertex3
-		private var _vertexData4 : Vector.<Number>;			// vertex4
-		private var _vertexData5 : Vector.<Number>;			// vertex4
+		private var _vertexData0 : Vector.<Number>;
+		private var _vertexData1 : Vector.<Number>;
+		private var _vertexData2 : Vector.<Number>;
+		private var _vertexData3 : Vector.<Number>;
+		private var _vertexData4 : Vector.<Number>;
+		private var _vertexData5 : Vector.<Number>;
 		
-		private var _indexData : Vector.<uint>;				// index
+		private var _indexData : Vector.<uint>;
 		
 		private var _particleSystem:ParticleSystemExt;
 		private var _maxVertexNum:uint = 0 ;
@@ -58,20 +55,25 @@ package de.nulldesign.nd2d.effect
 		protected var _texture:Texture2D;
 		
 			
-		public function ParticleSystemExtMaterial(ps:ParticleSystemExt ,texture:Texture2D)
+		public function ParticleSystemExtMaterial(ps:ParticleSystemExt ,texture:Texture2D):void
 		{
 			_particleSystem = ps;
 			_texture = texture;
-			
+			init();
+		}
+		
+
+		protected function init():void
+		{
 			_maxVertexNum = _particleSystem.maxCapacity * 4 ;        // one particle have four vertex
 			_maxIndexNum = _particleSystem.maxCapacity * 6;			// six index
 			
-			_vertexData0 = new Vector.<Number>(_maxVertexNum * 3, true);	// (x,y,z)
+			_vertexData0 = new Vector.<Number>(_maxVertexNum * 3, true); // (x,y,z)
 			_vertexData1 = new Vector.<Number>(_maxVertexNum * 4, true); // ( startSizeX, startSizeY, endSizeX, endSizeY )
-			_vertexData2 = new Vector.<Number>(_maxVertexNum * 4, true); //(startTime, lifetime, rot, rotv)
-			_vertexData3 = new Vector.<Number>(_maxVertexNum * 4, true); //(Vx, Vy, Vz)
-			_vertexData4 = new Vector.<Number>(_maxVertexNum * 4, true);// (r, g, b, a)
-			_vertexData5 = new Vector.<Number>(_maxVertexNum * 4, true);// (u, v, 0, 0)
+			_vertexData2 = new Vector.<Number>(_maxVertexNum * 4, true); // (startTime, lifetime, rot, rotv)
+			_vertexData3 = new Vector.<Number>(_maxVertexNum * 4, true); // (Vx, Vy, Vz)
+			_vertexData4 = new Vector.<Number>(_maxVertexNum * 8, true); // (r, g, b, a)
+			_vertexData5 = new Vector.<Number>(_maxVertexNum * 4, true); // (u, v, 0, 0)
 			
 			_indexData = new Vector.<uint>(_maxIndexNum, true); 
 			for(var index:int = 0 ; index < _particleSystem.maxCapacity ; index++)
@@ -85,8 +87,6 @@ package de.nulldesign.nd2d.effect
 			}
 			_indexBufferDirty = true ;
 		}
-		
-
 		
 		private static var tmpVec3 : Vector3D = new Vector3D;
 		
@@ -143,7 +143,6 @@ package de.nulldesign.nd2d.effect
 			
 			
 			// va2  (startTime , lifeTime ,rot,rotVel)
-//			var liftTime : int = newParticle.pastTime + newParticle.remainTime
 			_vertexData2[index*16] = newParticle.startTime;
 			_vertexData2[index*16+1] = newParticle.lifeTime;
 			_vertexData2[index*16+2] = newParticle.rot;
@@ -193,25 +192,41 @@ package de.nulldesign.nd2d.effect
 			_vertexBufferDirty3 = true;
 			
 			// va4 粒子颜色
-			_vertexData4[index*16] = newParticle.r;
-			_vertexData4[index*16+1] = newParticle.g;
-			_vertexData4[index*16+2] = newParticle.b;
-			_vertexData4[index*16+3] = newParticle.alpha;
+			_vertexData4[index*32] = newParticle.startR;
+			_vertexData4[index*32+1] = newParticle.startG;
+			_vertexData4[index*32+2] = newParticle.startB;
+			_vertexData4[index*32+3] = newParticle.startAlpha;
+			_vertexData4[index*32+4] = newParticle.endR;
+			_vertexData4[index*32+5] = newParticle.endG;
+			_vertexData4[index*32+6] = newParticle.endB;
+			_vertexData4[index*32+7] = newParticle.endAlpha;
 			
-			_vertexData4[index*16+4] = newParticle.r;
-			_vertexData4[index*16+5] = newParticle.g;
-			_vertexData4[index*16+6] = newParticle.b;
-			_vertexData4[index*16+7] = newParticle.alpha;
+			_vertexData4[index*32+8] = newParticle.startR;
+			_vertexData4[index*32+9] = newParticle.startG;
+			_vertexData4[index*32+10] = newParticle.startB;
+			_vertexData4[index*32+11] = newParticle.startAlpha;
+			_vertexData4[index*32+12] = newParticle.endR;
+			_vertexData4[index*32+13] = newParticle.endG;
+			_vertexData4[index*32+14] = newParticle.endB;
+			_vertexData4[index*32+15] = newParticle.endAlpha;
 			
-			_vertexData4[index*16+8] = newParticle.r;
-			_vertexData4[index*16+9] = newParticle.g;
-			_vertexData4[index*16+10] = newParticle.b;
-			_vertexData4[index*16+11] = newParticle.alpha;
+			_vertexData4[index*32+16] = newParticle.startR;
+			_vertexData4[index*32+17] = newParticle.startG;
+			_vertexData4[index*32+18] = newParticle.startB;
+			_vertexData4[index*32+19] = newParticle.startAlpha;
+			_vertexData4[index*32+20] = newParticle.endR;
+			_vertexData4[index*32+21] = newParticle.endG;
+			_vertexData4[index*32+22] = newParticle.endB;
+			_vertexData4[index*32+23] = newParticle.endAlpha;
 			
-			_vertexData4[index*16+12] = newParticle.r;
-			_vertexData4[index*16+13] = newParticle.g;
-			_vertexData4[index*16+14] = newParticle.b;
-			_vertexData4[index*16+15] = newParticle.alpha;
+			_vertexData4[index*32+24] = newParticle.startR;
+			_vertexData4[index*32+25] = newParticle.startG;
+			_vertexData4[index*32+26] = newParticle.startB;
+			_vertexData4[index*32+27] = newParticle.startAlpha;
+			_vertexData4[index*32+28] = newParticle.endR;
+			_vertexData4[index*32+29] = newParticle.endG;
+			_vertexData4[index*32+30] = newParticle.endB;
+			_vertexData4[index*32+31] = newParticle.endAlpha;
 			
 			_vertexBufferDirty4 = true;
 			
@@ -282,7 +297,7 @@ package de.nulldesign.nd2d.effect
 			
 			if (_vertexBufferDirty4 || !_vertexBuffer4) 
 			{
-				_vertexBuffer4 ||= context.createVertexBuffer(_maxVertexNum, 4);
+				_vertexBuffer4 ||= context.createVertexBuffer(_maxVertexNum, 8);
 				_vertexBuffer4.uploadFromVector( _vertexData4, 0, _maxVertexNum);
 				_vertexBufferDirty4 = false;
 			}		
@@ -318,14 +333,14 @@ package de.nulldesign.nd2d.effect
 		 * va4		(r,g,b,a) 
 		 * va5      (uv)
 		 * 
-		 * vt0     (passtime / lifetime,null,null,null)
+		 * vt0     (lifePercent,passTime,null,)
 		 * vt1     (cos*x,sin*y,cos*y,sin*x)
 		 * vt2     
 		 * vt3
-		 * vt4
+		 * vt4     sizeAffector结果
 		 * vt5
 		 * vt6
-		 * vt7
+		 * vt7    xy size
 		 */		
 		private  function getVertexShader():String
 		{
@@ -335,7 +350,7 @@ package de.nulldesign.nd2d.effect
 			
 			
 			AGAL.init();
-			AGAL.sub("vt0","vc4.w","va2.x");
+			AGAL.sub("vt0","vc4.w","va2.x");//passtime
 			AGAL.div("vt0.x" , "vt0.x" , "va2.y");  
 			AGAL.sat("vt0.x","vt0.x");// vt0.x =  passtime / lifetime
 			
@@ -352,9 +367,9 @@ package de.nulldesign.nd2d.effect
 					AGAL.slt("vt6.y","vt0.x","vc"+vc2+".w"); 
 					AGAL.mul("vt6.x","vt6.x","vt6.y"); //   (>= frame1 && < frame2)? 1 : 0
 					
-					AGAL.sub("vt7.x","vt0.x","vc"+vc1+".w"); // p - frame1
+					AGAL.sub("vt7.x","vt0.x","vc"+vc1+".w"); // p - frame1Percent
 					AGAL.mov("vt7.y","vc"+vc2+".w");
-					AGAL.sub("vt7.y","vt7.y","vc"+vc1+".w"); // frame2 - frame1
+					AGAL.sub("vt7.y","vt7.y","vc"+vc1+".w"); // frame2Percent - frame1Percent
 					AGAL.div("vt7.x","vt7.x","vt7.y"); //  weight : vt7.x =  (p - frame1) / (frame2 - frame1)
 					
 					
@@ -372,17 +387,17 @@ package de.nulldesign.nd2d.effect
 				AGAL.div("vt7.xy","vt7.xy","vt7.zw"); // +1 or -1
 				
 				AGAL.mul("vt7.xy","vt7.xy","vt4.xy"); 
-				AGAL.div("vt7.xy","vt7.xy","vc4.zz"); // x,y/2
+				AGAL.div("vt7.xy","vt7.xy","vc4.zz"); // x,y)/2
 			}else
 			{
 				AGAL.lerp("vt7.xy","va1.xy","va1.zw","vt0.x");
 //				AGAL.mov("vt7.xy","va1.zw"); //vt8 (sizeX,sizeY)
 			}
 			
-			
+//			vt0.xy,vt7.xy不可用
 			
 			///////////// rotate
-			AGAL.mul("vt3.x","vt0.w","va2.w"); // passTime * rotV 
+			AGAL.mul("vt3.x","vt0.y","va2.w"); // passTime * rotV 
 			AGAL.add("vt3.x","vt3.x","va2.z"); // rot + rotV * passTime
 			//new Vector2D( (cos*x) - (sin*y) , (cos*y) + (sin*x) );
 			AGAL.sin("vt3.y","vt3.x");
@@ -392,27 +407,28 @@ package de.nulldesign.nd2d.effect
 			AGAL.mul("vt1.z","vt3.z","vt7.y"); // cos*y
 			AGAL.mul("vt1.w","vt3.y","vt7.x"); // sin*x
 			
-			AGAL.sub("vt0.y","vt1.x","vt1.y"); //(cos*x) - (sin*y)  
-			AGAL.add("vt0.z","vt1.z","vt1.w"); //(cos*y) + (sin*x) 
+			AGAL.sub("vt0.z","vt1.x","vt1.y"); //(cos*x) - (sin*y)  
+			AGAL.add("vt0.w","vt1.z","vt1.w"); //(cos*y) + (sin*x) 
 			
 			AGAL.mov("vt2","va0");
-			AGAL.add("vt2.xy","va0.xy","vt0.yz"); //vt2 : pos after rotate
+			AGAL.add("vt2.xy","va0.xy","vt0.zw"); //vt2 : pos after rotate
 			
 			// move
-			AGAL.mul("vt4.xyz","vt0.www","va3.xyz"); // passTime * V
+			AGAL.mul("vt4.xyz","vt0.yyyy","va3.xyz"); // passTime * V
 			AGAL.add("vt2.xy","vt2.xy","vt4.xy"); //vt2 = p + v
 			
 			AGAL.m44("vt5","vt2","vc0");
 			
-			AGAL.slt("vt0.x","vt0.w","va2.y"); // if (die) vt0.x =0
-			AGAL.mul("op","vt5","vt0.x");
+			AGAL.slt("vt3.x","vt0.y","va2.y"); // if (die) vt0.x =0
+			AGAL.mul("op","vt5","vt3.x");
 			
-			AGAL.sub("v3","vt0.x","vc4.y");
+			AGAL.sub("v3","vt3.x","vc4.y");
+			
 			AGAL.mov("v1","va5"); //uv
 			
-			
-			 
-			AGAL.mov("v0","va4"); //color
+			AGAL.mov("vt1","vc4.y");
+			AGAL.lerp("vt1","va4","va6","vt0.x");
+			AGAL.mov("v0","vt1"); //color
 			
 //			var vc1:uint;
 //			var vc2:uint;
@@ -483,8 +499,8 @@ package de.nulldesign.nd2d.effect
 			context.setVertexBufferAt(2,_vertexBuffer2,0,Context3DVertexBufferFormat.FLOAT_4); //va2  (pastTime , lifeTime ,rot,rotVel)
 			context.setVertexBufferAt(3,_vertexBuffer3,0,Context3DVertexBufferFormat.FLOAT_4); //va3 V (x,y,z)
 			context.setVertexBufferAt(4,_vertexBuffer4,0,Context3DVertexBufferFormat.FLOAT_4); //va4 (r, g, b, a)
-			context.setVertexBufferAt(5,_vertexBuffer5,0,Context3DVertexBufferFormat.FLOAT_4); //va5 (r, g, b, a)
-			
+			context.setVertexBufferAt(6,_vertexBuffer4,4,Context3DVertexBufferFormat.FLOAT_4); //va4 (r, g, b, a)
+			context.setVertexBufferAt(5,_vertexBuffer5,0,Context3DVertexBufferFormat.FLOAT_4); //va5 (uv 0,0)
 			refreshClipspaceMatrix();
 			context.setProgramConstantsFromMatrix(Context3DProgramType.VERTEX, 0, clipSpaceMatrix, true); //vc0~3
 			_commonConst4[3] = _particleSystem.currentTime
@@ -536,7 +552,7 @@ package de.nulldesign.nd2d.effect
 		
 		override public function dispose():void
 		{
-			super.dispose()
+		
 			if(_indexBuffer)
 			{
 				_indexBuffer.dispose();
@@ -567,6 +583,7 @@ package de.nulldesign.nd2d.effect
 				_vertexBuffer4.dispose();
 				_vertexBuffer4 = null ;
 			}
+			super.dispose()
 		}
 	}
 }
