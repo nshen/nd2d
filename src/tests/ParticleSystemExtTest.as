@@ -32,7 +32,9 @@ package tests {
 	
 	import de.nulldesign.nd2d.display.ParticleSystem2D;
 	import de.nulldesign.nd2d.display.Scene2D;
+	import de.nulldesign.nd2d.effect.BurstEmitter;
 	import de.nulldesign.nd2d.effect.ParticleSystemExt;
+	import de.nulldesign.nd2d.effect.ParticleSystemExtPreset;
 	import de.nulldesign.nd2d.effect.RectEmitter;
 	import de.nulldesign.nd2d.materials.BlendModePresets;
 	import de.nulldesign.nd2d.materials.texture.Texture2D;
@@ -43,6 +45,8 @@ package tests {
 	import flash.events.MouseEvent;
 	import flash.geom.Point;
 	
+	import flashx.textLayout.elements.BreakElement;
+	
 	public class ParticleSystemExtTest extends Scene2D {
 		
 		[Embed(source="/assets/crate.jpg")]
@@ -51,6 +55,10 @@ package tests {
 		private var particles:ParticleSystemExt;
 		private var emitter:RectEmitter;
 		private var emitter2:RectEmitter;
+		private var burstEmitter:BurstEmitter
+		
+		
+		private var psp:ParticleSystemExtPreset;
 		
 		public function ParticleSystemExtTest() {
 			
@@ -58,29 +66,30 @@ package tests {
 //			emitter.color = 0x222222;
 //			emitter.colorRange = 0xaaaaaa;
 			emitter.directionFrom.setTo(-500,0,0);
-			emitter.directionTo.setTo(600,0,200);
+			emitter.directionTo.setTo(600,0,0);
 			emitter.emitPeriod = 5;
 			emitter.emitTime = 2;
 			emitter.emitRate = 100;
-			emitter.EmitterRectFrom.setTo(-200,-200,0);
-			emitter.EmitterRectTo.setTo(200,200,0)
+			emitter.rectFrom.setTo(-200,-200,0);
+			emitter.rectTo.setTo(200,200,0)
 			emitter.sizeX = 10;
 			emitter.sizeY = 10;
 			emitter.sizeRange = 10;
 			emitter.vel = 200;
 			emitter.rotVel = 5;
 			emitter.rotRange = 10;
+//			emitter.lifeTime = 0.5
 			
 			emitter2 = new RectEmitter();
 			emitter2.color = 0x000000;
 			emitter2.colorRange = 0xffffff;
 			emitter2.directionFrom.setTo(-500,0,0);
-			emitter2.directionTo.setTo(600,0,200);
+			emitter2.directionTo.setTo(600,0,0);
 			emitter2.emitPeriod = 0;
 			emitter2.emitTime = 0;
-			emitter2.emitRate = 800;
-			emitter2.EmitterRectFrom.setTo(-200,-200,0);
-			emitter2.EmitterRectTo.setTo(200,200,0)
+			emitter2.emitRate = 300;
+			emitter2.rectFrom.setTo(-200,-200,0);
+			emitter2.rectTo.setTo(200,200,0)
 			emitter2.sizeX = 10;
 			emitter2.sizeY = 10;
 			emitter2.sizeRange = 50
@@ -88,8 +97,23 @@ package tests {
 			emitter2.rotVel = 5;
 			emitter2.rotRange = 10;
 			
-			particles = new ParticleSystemExt(Texture2D.textureFromBitmapData(new particleClass().bitmapData) ,1000);
-			particles.emitter = emitter;
+			burstEmitter = new BurstEmitter();
+			burstEmitter.minStartPosition.x = -300.0;
+			burstEmitter.maxStartPosition.x = 300.0;
+			burstEmitter.startColor = 0x00FF00;
+			burstEmitter.startColorVariance = 0x0000FF;
+			burstEmitter.endColor = 0xAAFF33;
+			burstEmitter.endColorVariance = 0xFF9966;
+			burstEmitter.minStartSize = 1;
+			burstEmitter.maxStartSize = 3;
+			burstEmitter.minEndSize = 70;
+			burstEmitter.maxEndSize = 80;
+			burstEmitter.spawnDelay = 5.0;
+			burstEmitter.minLife = 0.1;
+			burstEmitter.maxLife = 5;
+			
+			particles = new ParticleSystemExt(Texture2D.textureFromBitmapData(new particleClass().bitmapData) ,200);
+//			particles.emitter = emitter;
 			addChild(particles);
 			
 //			particles.sizeAffector.addKeyFrame(0,0,0);
@@ -103,15 +127,25 @@ package tests {
 			addEventListener(MouseEvent.CLICK , onMouseClick);
 		}
 		
+		protected var state:uint = 0;
 		protected function onMouseClick(event:MouseEvent):void
 		{
-			if(particles.emitter == emitter)
+			switch(state)
 			{
-				particles.emitter = emitter2;
-			}else
-			{
-				particles.emitter = emitter;
+				case 0:
+					particles.emitter = burstEmitter;
+					state = 1;
+					break;
+				case 1:
+					particles.emitter = emitter2;
+					state = 2;
+					break;
+				case 2:
+					particles.emitter = emitter;
+					state = 0;
+					break;
 			}
+		
 		}		
 		
 		

@@ -14,7 +14,7 @@ package de.nulldesign.nd2d.effect
 	public class AGAL
 	{
 		private static var _code:String = "";
-		public static var _traceCode:Boolean = true ;
+		public static var _traceCode:Boolean = false ;
 		public static function init():void
 		{
 			_code = "";

@@ -110,9 +110,9 @@ package
 			stage.align = StageAlign.TOP_LEFT;
 			enableErrorChecking = true;
 
-			scenes.push(ParticleSystemExtTest);
-			scenes.push(SideScrollerTest);
-			scenes.push(MassiveSpritesTest);
+			
+//			scenes.push(SideScrollerTest);
+//			scenes.push(MassiveSpritesTest);
 //			scenes.push(MassiveSpriteCloudTest);
 //			scenes.push(SpriteHierarchyTest);
 //			scenes.push(SpriteHierarchyTest2);
@@ -122,6 +122,7 @@ package
 //			scenes.push(SpriteAnimTest);
 //			scenes.push(StarFieldTest);
 //			scenes.push(ParticleSystemTest);
+			scenes.push(ParticleSystemExtTest);
 //			scenes.push(CameraTest);
 //			scenes.push(ParticleExplorer);
 //			scenes.push(MaskTest);

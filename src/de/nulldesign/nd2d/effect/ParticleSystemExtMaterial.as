@@ -36,7 +36,7 @@ package de.nulldesign.nd2d.effect
 		protected var _vertexBufferDirty3:Boolean;
 		protected var _vertexBufferDirty4:Boolean;
 		protected var _vertexBufferDirty5:Boolean;
-		protected var _programDrity:Boolean = true ;
+		public var _programDrity:Boolean = true ;
 		
 		private var _vertexData0 : Vector.<Number>;
 		private var _vertexData1 : Vector.<Number>;
@@ -112,7 +112,7 @@ package de.nulldesign.nd2d.effect
 			
 			_vertexBufferDirty = true ;
 			
-			// va1 uv and size
+			// va1 size
 			var halfStartSizeX:Number = newParticle.startSizeX * 0.5;
 			var halfStartSizeY:Number = newParticle.startSizeY * 0.5;
 			var halfEndSizeX:Number = newParticle.endSizeX * 0.5;
@@ -351,8 +351,13 @@ package de.nulldesign.nd2d.effect
 			
 			AGAL.init();
 			AGAL.sub("vt0","vc4.w","va2.x");//passtime
-			AGAL.div("vt0.x" , "vt0.x" , "va2.y");  
-			AGAL.sat("vt0.x","vt0.x");// vt0.x =  passtime / lifetime
+			AGAL.div("vt0.x" , "vt0.x" , "va2.y");  // vt0.x =  passtime / lifetime
+//			if(_particleSystem.preset)
+//			{
+//				trace("frc")
+//				AGAL.frc("vt0","vt0");
+//			}
+			AGAL.sat("vt0.x","vt0.x");
 			
 			//sizeAffector: vc 16 , 17 , 18 , 19 [x,y,0,percent]
 			if(_particleSystem.sizeAffector.bufferData.length > 4) // 2 frames at least
@@ -455,7 +460,11 @@ package de.nulldesign.nd2d.effect
 		{
 			AGAL.init();
 		
-			AGAL.kil("v3.x");
+//			if(_particleSystem.preset == null)
+//			{
+				AGAL.kil("v3.x");
+				
+//			}
 			AGAL.tex("ft0","v1","fs0","2d","repeat","nomip");
 	      
 			AGAL.mul("ft0","ft0","v0.xyz");
@@ -503,7 +512,8 @@ package de.nulldesign.nd2d.effect
 			context.setVertexBufferAt(5,_vertexBuffer5,0,Context3DVertexBufferFormat.FLOAT_4); //va5 (uv 0,0)
 			refreshClipspaceMatrix();
 			context.setProgramConstantsFromMatrix(Context3DProgramType.VERTEX, 0, clipSpaceMatrix, true); //vc0~3
-			_commonConst4[3] = _particleSystem.currentTime
+			_commonConst4[3] = _particleSystem.currentTime ;
+//			trace("system time :" + _commonConst4[3])
 			context.setProgramConstantsFromVector(Context3DProgramType.VERTEX,4,_commonConst4,1);//vc4
 			
 			prepareAffector(context);
@@ -533,6 +543,8 @@ package de.nulldesign.nd2d.effect
 			context.setVertexBufferAt(2,null);
 			context.setVertexBufferAt(3,null);
 			context.setVertexBufferAt(4,null);
+			context.setVertexBufferAt(5,null);
+			context.setVertexBufferAt(6,null);
 			context.setTextureAt(0, null);
 		}
 			
@@ -582,6 +594,11 @@ package de.nulldesign.nd2d.effect
 			{
 				_vertexBuffer4.dispose();
 				_vertexBuffer4 = null ;
+			}
+			if(_vertexBuffer5)
+			{
+				_vertexBuffer5.dispose();
+				_vertexBuffer5 = null;
 			}
 			super.dispose()
 		}

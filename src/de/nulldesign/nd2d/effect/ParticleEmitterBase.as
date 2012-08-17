@@ -3,12 +3,13 @@ package de.nulldesign.nd2d.effect
 
 	public class ParticleEmitterBase
 	{
-		protected var _particleSystem:ParticleSystemExt;
-		protected var _newParticleCount:Number = 0;
 		
 		public var emitPeriod:Number = 0;
 		public var emitTime:Number = 1;
 		public var emitRate:Number = 5;
+		
+		protected var _particleSystem:ParticleSystemExt;
+		protected var _newParticleCount:Number = 0;
 		
 		protected var pastTime:Number = 0;
 		protected var inEmitTime : Boolean = true;

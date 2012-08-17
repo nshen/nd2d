@@ -8,6 +8,7 @@ package de.nulldesign.nd2d.effect
 	import de.nulldesign.nd2d.effect.affector.SizeAffector;
 	import de.nulldesign.nd2d.materials.texture.Texture2D;
 	import de.nulldesign.nd2d.utils.NumberUtil;
+	import de.nulldesign.nd2d.utils.VectorUtil;
 	
 	import flash.display3D.Context3D;
 	import flash.utils.getTimer;
@@ -17,7 +18,6 @@ package de.nulldesign.nd2d.effect
 		protected var _particles:Vector.<ParticleExt>;
 		protected var _emitter:ParticleEmitterBase;
 		protected var _material:ParticleSystemExtMaterial;
-		protected var _preset:ParticleSystemExtPreset;
 		
 		protected var _alphaAffector:AlphaAffector = new AlphaAffector();
 		protected var _sizeAffector:SizeAffector = new SizeAffector();
@@ -29,27 +29,25 @@ package de.nulldesign.nd2d.effect
 		public var currentTime:Number = 0 ;
 		public var startTime:Number = 0 ;
 		
-		public function ParticleSystemExt( texture:Texture2D ,maxCapacity:uint ,preset:ParticleSystemExtPreset = null)
+		public function ParticleSystemExt( texture:Texture2D ,maxCapacity:uint ,burstEmitter:BurstEmitter = null)
 		{
 			_maxCapacity = maxCapacity ;
-			_preset = preset;
-			init(texture)
+			init(texture,burstEmitter)
 		
 		}
 		
-		protected function init(texture:Texture2D):void
+		protected function init(texture:Texture2D , burst:BurstEmitter):void
 		{
 			_particles = new Vector.<ParticleExt>(_maxCapacity, true);
-			for(var i:int = 0 ; i < _maxCapacity ; i ++ )
+			
+			for(var i:int = 0 ; i< _maxCapacity ; i ++ )
 			{
 				_particles[i] = new ParticleExt(i);
-				if(_preset)
-				{
-					presetParticle(_particles[i]);
-				}
 			}
 			_material = new ParticleSystemExtMaterial(this,texture);
 			
+			if(burst)
+				emitter = burst;
 		}
 		
 		public function get sizeAffector():SizeAffector
@@ -73,15 +71,20 @@ package de.nulldesign.nd2d.effect
 		{
 			return _maxCapacity;
 		}
+		
 
 		public function set emitter(value : ParticleEmitterBase):void
 		{
+			_material._programDrity = true;
 			if(_emitter)
 			{
 				_emitter.particleSystem = null ;
 			}
-			_emitter = value;
-			_emitter.particleSystem = this;
+			if(value)
+			{
+				_emitter = value;
+				_emitter.particleSystem = this;
+			}
 		}
 		public function get emitter() : ParticleEmitterBase {return _emitter;}
 		
@@ -92,33 +95,7 @@ package de.nulldesign.nd2d.effect
 			return _particles[_lastIndex].reset();
 		}
 		
-		protected function presetParticle(p:ParticleExt):void
-		{
-//			p.pos.x = NumberUtil.rndMinMax(_preset.minStartPosition.x, _preset.maxStartPosition.x);
-//			p.pos.y = NumberUtil.rndMinMax(_preset.minStartPosition.y, _preset.maxStartPosition.y);
-//			
-//			p.vel = NumberUtil.rndMinMax(_preset.minSpeed, _preset.maxSpeed);
-//			var angle:Number = NumberUtil.rndMinMax(VectorUtil.deg2rad(_preset.minEmitAngle),VectorUtil.deg2rad(_preset.maxEmitAngle));
-//			p.dir.setTo(Math.cos(angle),Math.sin(angle),0);
-//			
-//			p.startColor = _preset.startColor + _preset.startColorVariance * Math.random();
-//			p.endColor = _preset.endColor + _preset.endColorVariance * Math.random();
-//			
-//			p.startAlpha = _preset.startAlpha;
-//			p.endAlpha = _preset.endAlpha;
-//			
-//			p.startSizeX = NumberUtil.rndMinMax(_preset.minStartSizeX, _preset.maxStartSizeX);
-//			p.endSizeX = NumberUtil.rndMinMax(_preset.minEndSizeX, _preset.maxEndSizeX);
-//			p.startSizeY = NumberUtil.rndMinMax(_preset.minStartSizeY, _preset.maxStartSizeY);
-//			p.endSizeY = NumberUtil.rndMinMax(_preset.minEndSizeY, _preset.maxEndSizeY);
-//			
-//			p.startTime = _preset.spawnDelay * p.index;
-//			p.lifeTime  = NumberUtil.rndMinMax(_preset.minLife, _preset.maxLife);
-//			
-//			p.rotVel = _preset.rotVel + _preset.rotVelRange * Math.random();
-			
-			_material.updateParticle(p);
-		}
+
 		
 		
 		

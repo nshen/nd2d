@@ -50,9 +50,6 @@ package de.nulldesign.nd2d.effect
 			startAlpha = endAlpha = value;
 		}
 		
-		
-		
-		
 		public function get startR():Number
 		{
 			return ((startColor & 0xff0000) >> 16) / 0xff;

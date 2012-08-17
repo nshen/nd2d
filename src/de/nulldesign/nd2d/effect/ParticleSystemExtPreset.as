@@ -28,13 +28,13 @@ package de.nulldesign.nd2d.effect
 		
 		public var spawnDelay:Number = 10.0;
 		
-		public var minLife:Number = 2000.0;
-		public var maxLife:Number = 3000.0;
+		public var minLife:Number = 1;
+		public var maxLife:Number = 3;
 		
 		public var minStartSizeX:Number = 1.0;
 		public var maxStartSizeX:Number = 1.0;
 		public var minEndSizeX:Number = 1.0;
-		public var maxEndSizeX:Number = 2.0;
+		public var maxEndSizeX:Number = 1.0;
 		
 		public var minStartSizeY:Number = 1.0;
 		public var maxStartSizeY:Number = 1.0;
