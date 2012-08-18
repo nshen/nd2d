@@ -124,6 +124,10 @@ package tests {
 //			particles.colorAffector.addKeyFrame(0.5,1,0,0);
 //			particles.colorAffector.addKeyFrame(1,0,0,1);
 			
+			particles.alphaAffector.addKeyFrame(0,1);
+			particles.alphaAffector.addKeyFrame(0.5,0);
+//			particles.alphaAffector.addKeyFrame(0.6,1);
+			particles.alphaAffector.addKeyFrame(1,1);
 			addChild(particles);
 			
 			

@@ -95,11 +95,7 @@ package
 		{
 			super(Context3DRenderMode.AUTO, 60);
 			
-			var a:AlphaAffector  = new AlphaAffector()
-				a.addKeyFrame(0.3,3)
-				a.addKeyFrame(0.6,6);
-				a.addKeyFrame(0.2,2);
-				a.addKeyFrame(0.4,4);
+			
 		}
 
 		override protected function addedToStage(event:Event):void

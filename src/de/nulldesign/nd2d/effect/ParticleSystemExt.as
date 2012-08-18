@@ -143,9 +143,9 @@ package de.nulldesign.nd2d.effect
 			
 			if(_colorAffector.keyframeCount > 0)
 			{
-				updateAffectors();
 			}
 			
+				updateAffectors();
 			
 
 		}
@@ -164,25 +164,53 @@ package de.nulldesign.nd2d.effect
 					continue;
 				
 				percent = past / p.lifeTime;
-				fi1 = 0 ;
-				fi2 = fi1 + 4;
-				while(fi2 < _colorAffector._colorVector.length)
+				if(_colorAffector.keyframeCount > 1)
 				{
-					
-					f1Percent = _colorAffector._colorVector[fi1];
-					f2Percent = _colorAffector._colorVector[fi2];
-					if(percent >= f1Percent && percent < f2Percent)
-					{
-						_material.upadteParticleColor(
-							p.index,_colorAffector._colorVector[fi1+1],_colorAffector._colorVector[fi1+2],_colorAffector._colorVector[fi1+3],
-							_colorAffector._colorVector[fi2+1] , _colorAffector._colorVector[fi2+2] , _colorAffector._colorVector[fi2+3],
-							f1Percent,f2Percent
-						)
-						break ;
-					}
-					fi1 = fi2;
+					fi1 = 0 ;
 					fi2 = fi1 + 4;
+					while(fi2 < _colorAffector._colorVector.length)
+					{
+						
+						f1Percent = _colorAffector._colorVector[fi1];
+						f2Percent = _colorAffector._colorVector[fi2];
+						if(percent >= f1Percent && percent < f2Percent)
+						{
+							_material.upadteParticleColor(
+								p.index,_colorAffector._colorVector[fi1+1],_colorAffector._colorVector[fi1+2],_colorAffector._colorVector[fi1+3],
+								_colorAffector._colorVector[fi2+1] , _colorAffector._colorVector[fi2+2] , _colorAffector._colorVector[fi2+3],
+								f1Percent,f2Percent
+							)
+							break ;
+						}
+						fi1 = fi2;
+						fi2 = fi1 + 4;
+					}
+					
+				};
+				if(_alphaAffector.keyframeCount > 1)
+				{
+					fi1 = 0 ;
+					fi2 = fi1 + 4;
+					while(fi2 < _alphaAffector._alphaVector.length)
+					{
+						
+						f1Percent = _alphaAffector._alphaVector[fi1];
+						f2Percent = _alphaAffector._alphaVector[fi2];
+						if(percent >= f1Percent && percent < f2Percent)
+						{
+							_material.updateParticleAlpha(
+								p.index,
+								_alphaAffector._alphaVector[fi1+1],
+								_alphaAffector._alphaVector[fi2+1],
+								f1Percent,f2Percent
+							)
+							break ;
+						}
+						fi1 = fi2;
+						fi2 = fi1 + 4;
+					}
 				}
+
 			}
 			
 			if(_colorAffector)

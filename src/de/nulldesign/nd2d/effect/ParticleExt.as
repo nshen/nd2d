@@ -20,6 +20,8 @@ package de.nulldesign.nd2d.effect
 		
 		public var startAlpha:Number = 1;
 		public var endAlpha:Number = 1;
+		public var startAlphaPercent:Number = 0;
+		public var endAlphaPercent:Number = 1;
 		
 //		public var u : Number = 0.0;
 //		public var v : Number = 0.0;

@@ -37,6 +37,8 @@ package de.nulldesign.nd2d.effect
 			newParticle.startColor = 0xff0000;
 			newParticle.endColor = 0x0000ff;
 			newParticle.alpha = alpha + alphaRange * Math.random();
+//			newParticle.startAlpha = 1;
+//			newParticle.endAlpha = 0;
 			newParticle.lifeTime = lifeTime + lifeTimeRange * Math.random();
 			newParticle.dir.x = directionFrom.x * Math.random() + directionTo.x * Math.random();
 			newParticle.dir.y = directionFrom.y * Math.random() + directionTo.y * Math.random();

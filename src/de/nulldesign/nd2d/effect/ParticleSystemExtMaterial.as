@@ -17,6 +17,7 @@ package de.nulldesign.nd2d.effect
 	import flash.display3D.Program3D;
 	import flash.display3D.VertexBuffer3D;
 	import flash.geom.Vector3D;
+	
 	public class ParticleSystemExtMaterial extends AMaterial
 	{
 		
@@ -29,6 +30,7 @@ package de.nulldesign.nd2d.effect
 		protected var _vertexBuffer3:VertexBuffer3D;		// va3 (Vx, Vy, Vz)
 		protected var _vertexBuffer4:VertexBuffer3D;        // va4 va6 start,end(r,g,b,a)
 		protected var _vertexBuffer5:VertexBuffer3D;        // uv
+		protected var _vertexBuffer7:VertexBuffer3D;        //alpha
 		
 		protected var _vertexBufferDirty:Boolean;
 		protected var _vertexBufferDirty1:Boolean;
@@ -36,20 +38,23 @@ package de.nulldesign.nd2d.effect
 		protected var _vertexBufferDirty3:Boolean;
 		protected var _vertexBufferDirty4:Boolean;
 		protected var _vertexBufferDirty5:Boolean;
+		protected var _vertexBufferDirty7:Boolean;
+		
 		public var _programDrity:Boolean = true ;
 		
-		private var _vertexData0 : Vector.<Number>;
-		private var _vertexData1 : Vector.<Number>;
-		private var _vertexData2 : Vector.<Number>;
-		private var _vertexData3 : Vector.<Number>;
-		private var _vertexData4 : Vector.<Number>;
-		private var _vertexData5 : Vector.<Number>;
+		protected var _vertexData0 : Vector.<Number>;
+		protected var _vertexData1 : Vector.<Number>;
+		protected var _vertexData2 : Vector.<Number>;
+		protected var _vertexData3 : Vector.<Number>;
+		protected var _vertexData4 : Vector.<Number>;
+		protected var _vertexData5 : Vector.<Number>;
+		protected var _vertexData7 : Vector.<Number>;
 		
-		private var _indexData : Vector.<uint>;
+		protected var _indexData : Vector.<uint>;
 		
-		private var _particleSystem:ParticleSystemExt;
-		private var _maxVertexNum:uint = 0 ;
-		private var _maxIndexNum:uint = 0 ;
+		protected var _particleSystem:ParticleSystemExt;
+		protected var _maxVertexNum:uint = 0 ;
+		protected var _maxIndexNum:uint = 0 ;
 		
 		
 		protected var _texture:Texture2D;
@@ -74,6 +79,7 @@ package de.nulldesign.nd2d.effect
 			_vertexData3 = new Vector.<Number>(_maxVertexNum * 4, true); // (Vx, Vy, Vz)
 			_vertexData4 = new Vector.<Number>(_maxVertexNum * 8, true); // (startR, startG, b, a)
 			_vertexData5 = new Vector.<Number>(_maxVertexNum * 4, true); // (u, v, 0, 0)
+			_vertexData7 = new Vector.<Number>(_maxVertexNum * 4, true); // startPercent endPercent startAlpha endAlpha
 			
 			_indexData = new Vector.<uint>(_maxIndexNum, true); 
 			for(var index:int = 0 ; index < _particleSystem.maxCapacity ; index++)
@@ -193,30 +199,60 @@ package de.nulldesign.nd2d.effect
 			
 			upadteParticleColor(index,newParticle.startR,newParticle.startG,newParticle.startB,newParticle.endR,newParticle.endG,newParticle.endB,newParticle.startColorPercent,newParticle.endColorPercent);
 			
+			var i16:uint = index * 16;
+			_vertexData5[i16] = 0;
+			_vertexData5[i16+1] = 0;
+//			_vertexData5[i16+2] = startAlpha;
+//			_vertexData5[i16+3] = endAlpha;
 			
-			// va5 uv
-			_vertexData5[index*16] = 0;
-			_vertexData5[index*16+1] = 0;
-			_vertexData5[index*16+2] = newParticle.startAlpha;
-			_vertexData5[index*16+3] = newParticle.endAlpha;
+			_vertexData5[i16+4] = 1;
+			_vertexData5[i16+5] = 0;
+//			_vertexData5[i16+6] = startAlpha;
+//			_vertexData5[i16+7] = endAlpha;
 			
-			_vertexData5[index*16+4] = 1;
-			_vertexData5[index*16+5] = 0;
-			_vertexData5[index*16+6] = newParticle.startAlpha;
-			_vertexData5[index*16+7] = newParticle.endAlpha;
+			_vertexData5[i16+8] = 1;
+			_vertexData5[i16+9] = 1;
+//			_vertexData5[i16+10] = startAlpha;
+//			_vertexData5[i16+11] = endAlpha;
 			
-			_vertexData5[index*16+8] = 1;
-			_vertexData5[index*16+9] = 1;
-			_vertexData5[index*16+10] = newParticle.startAlpha;
-			_vertexData5[index*16+11] = newParticle.endAlpha;
-			
-			_vertexData5[index*16+12] = 0;
-			_vertexData5[index*16+13] = 1;
-			_vertexData5[index*16+14] = newParticle.startAlpha;
-			_vertexData5[index*16+15] = newParticle.endAlpha;
+			_vertexData5[i16+12] = 0;
+			_vertexData5[i16+13] = 1;
+//			_vertexData5[i16+14] = startAlpha;
+//			_vertexData5[i16+15] = endAlpha;
 			
 			_vertexBufferDirty5 = true;
+			
+			updateParticleAlpha(index,newParticle.startAlphaPercent , newParticle.endAlphaPercent , newParticle.startAlpha,newParticle.endAlpha);
+
 		}
+		
+		public function updateParticleAlpha(index:int, startAlpha:Number, endAlpha:Number, startPercent:Number , endPercent:Number ):void
+		{
+			// va5 uv alpha.
+			var i16:uint = index * 16;
+			_vertexData7[i16] = startPercent;
+			_vertexData7[i16+1] = endPercent;
+			_vertexData7[i16+2] = startAlpha;
+			_vertexData7[i16+3] = endAlpha;
+			
+			_vertexData7[i16+4] = startPercent;
+			_vertexData7[i16+5] = endPercent;
+			_vertexData7[i16+6] = startAlpha;
+			_vertexData7[i16+7] = endAlpha;
+			
+			_vertexData7[i16+8] = startPercent;
+			_vertexData7[i16+9] = endPercent;
+			_vertexData7[i16+10] = startAlpha;
+			_vertexData7[i16+11] = endAlpha;
+			
+			_vertexData7[i16+12] = startPercent;
+			_vertexData7[i16+13] = endPercent;
+			_vertexData7[i16+14] = startAlpha;
+			_vertexData7[i16+15] = endAlpha;
+			
+			_vertexBufferDirty7 = true;
+		}		
+		
 		
 		public function upadteParticleColor(index:int, startR:Number, startG:Number, startB:Number, endR:Number, endG:Number, endB:Number ,startPercent:Number,endPercent:Number):void
 		{
@@ -316,6 +352,13 @@ package de.nulldesign.nd2d.effect
 				_vertexBuffer5 ||= context.createVertexBuffer(_maxVertexNum, 4);
 				_vertexBuffer5.uploadFromVector( _vertexData5, 0, _maxVertexNum);
 				_vertexBufferDirty5 = false;
+			}		
+			
+			if (_vertexBufferDirty7 || !_vertexBuffer7) 
+			{
+				_vertexBuffer7 ||= context.createVertexBuffer(_maxVertexNum, 4);
+				_vertexBuffer7.uploadFromVector( _vertexData7, 0, _maxVertexNum);
+				_vertexBufferDirty7 = false;
 			}		
 			
 			if (_indexBufferDirty || !_indexBuffer) 
@@ -434,19 +477,25 @@ package de.nulldesign.nd2d.effect
 			AGAL.m44("vt5","vt2","vc0");
 			
 			AGAL.slt("vt3.x","vt0.y","va2.y"); // if (die) vt0.x =0
+			AGAL.sub("v3","vt3.x","vc4.y");
 			AGAL.mul("op","vt5","vt3.x");
 			
-			AGAL.sub("v3","vt3.x","vc4.y");
+			//uv
+			AGAL.mov("v1","va5.xy");
 			
-			AGAL.mov("v1","va5.xy"); //uv
-			
+			// color percent
 			AGAL.sub("vt2.x","vt0.x","va4.w");
 			AGAL.sub("vt2.y","va6.w","va4.w" );
 			AGAL.div("vt2.x","vt2.x","vt2.y");
-			
 			AGAL.lerp("vt1.xyz","va4.xyz","va6.xyz","vt2.x"); //color lerp
 			AGAL.mov("v0","vt1.xyz"); //color
-			AGAL.mov("v2","va5.w");//alpha
+			
+			// alpha percent
+			AGAL.sub("vt2.x","vt0.x","va7.x");
+			AGAL.sub("vt2.y","va7.y","va7.x");
+			AGAL.div("vt2.x","vt2.x","vt2.y");
+			AGAL.lerp("vt1.x","va7.z","va7.w","vt2.x");
+			AGAL.mov("v2","vt1.x");//alpha
 //			var vc1:uint;
 //			var vc2:uint;
 //			var vci:uint;
@@ -522,6 +571,8 @@ package de.nulldesign.nd2d.effect
 			context.setVertexBufferAt(4,_vertexBuffer4,0,Context3DVertexBufferFormat.FLOAT_4); //va4 (r, g, b, a)
 			context.setVertexBufferAt(6,_vertexBuffer4,4,Context3DVertexBufferFormat.FLOAT_4); //va4 (r, g, b, a)
 			context.setVertexBufferAt(5,_vertexBuffer5,0,Context3DVertexBufferFormat.FLOAT_4); //va5 (uv 0,0)
+			context.setVertexBufferAt(7,_vertexBuffer7,0,Context3DVertexBufferFormat.FLOAT_4); //va7 (startAlphaPercent , endAlphaPercent,startAlpha,endalpha)
+			
 			refreshClipspaceMatrix();
 			context.setProgramConstantsFromMatrix(Context3DProgramType.VERTEX, 0, clipSpaceMatrix, true); //vc0~3
 			_commonConst4[3] = _particleSystem.currentTime ;
@@ -557,6 +608,7 @@ package de.nulldesign.nd2d.effect
 			context.setVertexBufferAt(4,null);
 			context.setVertexBufferAt(5,null);
 			context.setVertexBufferAt(6,null);
+			context.setVertexBufferAt(7,null);
 			context.setTextureAt(0, null);
 		}
 			
