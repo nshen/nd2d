@@ -33,7 +33,9 @@ package de.nulldesign.nd2d.effect
 		
 		override protected function initParticle(newParticle:ParticleExt):void
 		{ 
-			newParticle.color = color + colorRange * Math.random();
+//			newParticle.color = color + colorRange * Math.random();
+			newParticle.startColor = 0xff0000;
+			newParticle.endColor = 0x0000ff;
 			newParticle.alpha = alpha + alphaRange * Math.random();
 			newParticle.lifeTime = lifeTime + lifeTimeRange * Math.random();
 			newParticle.dir.x = directionFrom.x * Math.random() + directionTo.x * Math.random();

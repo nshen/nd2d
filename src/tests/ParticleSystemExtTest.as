@@ -78,7 +78,13 @@ package tests {
 			emitter.vel = 200;
 			emitter.rotVel = 5;
 			emitter.rotRange = 10;
+			emitter.color = 0xff0000;
+			
 //			emitter.lifeTime = 0.5
+		
+			
+			
+			
 			
 			emitter2 = new RectEmitter();
 			emitter2.color = 0x000000;
@@ -87,7 +93,7 @@ package tests {
 			emitter2.directionTo.setTo(600,0,0);
 			emitter2.emitPeriod = 0;
 			emitter2.emitTime = 0;
-			emitter2.emitRate = 300;
+			emitter2.emitRate = 8000;
 			emitter2.rectFrom.setTo(-200,-200,0);
 			emitter2.rectTo.setTo(200,200,0)
 			emitter2.sizeX = 10;
@@ -112,12 +118,17 @@ package tests {
 			burstEmitter.minLife = 0.1;
 			burstEmitter.maxLife = 5;
 			
-			particles = new ParticleSystemExt(Texture2D.textureFromBitmapData(new particleClass().bitmapData) ,200);
-//			particles.emitter = emitter;
+			particles = new ParticleSystemExt(Texture2D.textureFromBitmapData(new particleClass().bitmapData) ,10000);
+			particles.emitter = emitter;
+//			particles.colorAffector.addKeyFrame(0,  0,1,0);
+//			particles.colorAffector.addKeyFrame(0.5,1,0,0);
+//			particles.colorAffector.addKeyFrame(1,0,0,1);
+			
 			addChild(particles);
 			
+			
 //			particles.sizeAffector.addKeyFrame(0,0,0);
-//			particles.sizeAffector.addKeyFrame(0.6,90,90);
+//			particles.sizeAffector.addKeyFrame(0.6,50,50);
 //			particles.sizeAffector.addKeyFrame(0.5,200,200);
 //			particles.sizeAffector.addKeyFrame(1,0,0);
 			

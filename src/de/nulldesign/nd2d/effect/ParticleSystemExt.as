@@ -5,6 +5,7 @@ package de.nulldesign.nd2d.effect
 	import de.nulldesign.nd2d.effect.ParticleEmitterBase;
 	import de.nulldesign.nd2d.effect.ParticleSystemExtMaterial;
 	import de.nulldesign.nd2d.effect.affector.AlphaAffector;
+	import de.nulldesign.nd2d.effect.affector.ColorAffector;
 	import de.nulldesign.nd2d.effect.affector.SizeAffector;
 	import de.nulldesign.nd2d.materials.texture.Texture2D;
 	import de.nulldesign.nd2d.utils.NumberUtil;
@@ -21,6 +22,7 @@ package de.nulldesign.nd2d.effect
 		
 		protected var _alphaAffector:AlphaAffector = new AlphaAffector();
 		protected var _sizeAffector:SizeAffector = new SizeAffector();
+		protected var _colorAffector:ColorAffector = new ColorAffector();
 		
 		protected var _maxCapacity:uint = 0 ;
 		protected var _lastIndex:int = -1;
@@ -50,6 +52,8 @@ package de.nulldesign.nd2d.effect
 				emitter = burst;
 		}
 		
+		//////////////////////////////
+		// affectors
 		public function get sizeAffector():SizeAffector
 		{
 			return _sizeAffector;
@@ -60,6 +64,11 @@ package de.nulldesign.nd2d.effect
 			return _alphaAffector;
 		}
 
+		public function get colorAffector():ColorAffector
+		{
+			return _colorAffector;
+		}
+		////////////////////////////////////////
 		public function get particles():Vector.<ParticleExt>
 		{
 			return _particles;
@@ -131,8 +140,58 @@ package de.nulldesign.nd2d.effect
 			
 			if(_emitter && _emitting)
 				_emitter.update(elapsed);
+			
+			if(_colorAffector.keyframeCount > 0)
+			{
+				updateAffectors();
+			}
+			
+			
+
 		}
 		
+		private function updateAffectors():void
+		{
+			
+			var past:Number;
+			var fi1:uint ,fi2:uint; //index
+			var percent:Number ,f1Percent:Number ,f2Percent:Number;
+			
+			for each(var p:ParticleExt in _particles)
+			{
+				past = currentTime - p.startTime ; 
+				if(past >= p.lifeTime) //die
+					continue;
+				
+				percent = past / p.lifeTime;
+				fi1 = 0 ;
+				fi2 = fi1 + 4;
+				while(fi2 < _colorAffector._colorVector.length)
+				{
+					
+					f1Percent = _colorAffector._colorVector[fi1];
+					f2Percent = _colorAffector._colorVector[fi2];
+					if(percent >= f1Percent && percent < f2Percent)
+					{
+						_material.upadteParticleColor(
+							p.index,_colorAffector._colorVector[fi1+1],_colorAffector._colorVector[fi1+2],_colorAffector._colorVector[fi1+3],
+							_colorAffector._colorVector[fi2+1] , _colorAffector._colorVector[fi2+2] , _colorAffector._colorVector[fi2+3],
+							f1Percent,f2Percent
+						)
+						break ;
+					}
+					fi1 = fi2;
+					fi2 = fi1 + 4;
+				}
+			}
+			
+			if(_colorAffector)
+			{
+				
+				
+			}
+			
+		}		
 		
 		override public function handleDeviceLoss():void 
 		{

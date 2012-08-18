@@ -72,7 +72,7 @@ package de.nulldesign.nd2d.effect
 			_vertexData1 = new Vector.<Number>(_maxVertexNum * 4, true); // ( startSizeX, startSizeY, endSizeX, endSizeY )
 			_vertexData2 = new Vector.<Number>(_maxVertexNum * 4, true); // (startTime, lifetime, rot, rotv)
 			_vertexData3 = new Vector.<Number>(_maxVertexNum * 4, true); // (Vx, Vy, Vz)
-			_vertexData4 = new Vector.<Number>(_maxVertexNum * 8, true); // (r, g, b, a)
+			_vertexData4 = new Vector.<Number>(_maxVertexNum * 8, true); // (startR, startG, b, a)
 			_vertexData5 = new Vector.<Number>(_maxVertexNum * 4, true); // (u, v, 0, 0)
 			
 			_indexData = new Vector.<uint>(_maxIndexNum, true); 
@@ -191,67 +191,76 @@ package de.nulldesign.nd2d.effect
 			
 			_vertexBufferDirty3 = true;
 			
-			// va4 粒子颜色
-			_vertexData4[index*32] = newParticle.startR;
-			_vertexData4[index*32+1] = newParticle.startG;
-			_vertexData4[index*32+2] = newParticle.startB;
-			_vertexData4[index*32+3] = newParticle.startAlpha;
-			_vertexData4[index*32+4] = newParticle.endR;
-			_vertexData4[index*32+5] = newParticle.endG;
-			_vertexData4[index*32+6] = newParticle.endB;
-			_vertexData4[index*32+7] = newParticle.endAlpha;
+			upadteParticleColor(index,newParticle.startR,newParticle.startG,newParticle.startB,newParticle.endR,newParticle.endG,newParticle.endB,newParticle.startColorPercent,newParticle.endColorPercent);
 			
-			_vertexData4[index*32+8] = newParticle.startR;
-			_vertexData4[index*32+9] = newParticle.startG;
-			_vertexData4[index*32+10] = newParticle.startB;
-			_vertexData4[index*32+11] = newParticle.startAlpha;
-			_vertexData4[index*32+12] = newParticle.endR;
-			_vertexData4[index*32+13] = newParticle.endG;
-			_vertexData4[index*32+14] = newParticle.endB;
-			_vertexData4[index*32+15] = newParticle.endAlpha;
-			
-			_vertexData4[index*32+16] = newParticle.startR;
-			_vertexData4[index*32+17] = newParticle.startG;
-			_vertexData4[index*32+18] = newParticle.startB;
-			_vertexData4[index*32+19] = newParticle.startAlpha;
-			_vertexData4[index*32+20] = newParticle.endR;
-			_vertexData4[index*32+21] = newParticle.endG;
-			_vertexData4[index*32+22] = newParticle.endB;
-			_vertexData4[index*32+23] = newParticle.endAlpha;
-			
-			_vertexData4[index*32+24] = newParticle.startR;
-			_vertexData4[index*32+25] = newParticle.startG;
-			_vertexData4[index*32+26] = newParticle.startB;
-			_vertexData4[index*32+27] = newParticle.startAlpha;
-			_vertexData4[index*32+28] = newParticle.endR;
-			_vertexData4[index*32+29] = newParticle.endG;
-			_vertexData4[index*32+30] = newParticle.endB;
-			_vertexData4[index*32+31] = newParticle.endAlpha;
-			
-			_vertexBufferDirty4 = true;
 			
 			// va5 uv
 			_vertexData5[index*16] = 0;
 			_vertexData5[index*16+1] = 0;
-			_vertexData5[index*16+2] = 0;
-			_vertexData5[index*16+3] = 0;
+			_vertexData5[index*16+2] = newParticle.startAlpha;
+			_vertexData5[index*16+3] = newParticle.endAlpha;
 			
 			_vertexData5[index*16+4] = 1;
 			_vertexData5[index*16+5] = 0;
-			_vertexData5[index*16+6] = 0;
-			_vertexData5[index*16+7] = 0;
+			_vertexData5[index*16+6] = newParticle.startAlpha;
+			_vertexData5[index*16+7] = newParticle.endAlpha;
 			
 			_vertexData5[index*16+8] = 1;
 			_vertexData5[index*16+9] = 1;
-			_vertexData5[index*16+10] = 0;
-			_vertexData5[index*16+11] = 0;
+			_vertexData5[index*16+10] = newParticle.startAlpha;
+			_vertexData5[index*16+11] = newParticle.endAlpha;
 			
 			_vertexData5[index*16+12] = 0;
 			_vertexData5[index*16+13] = 1;
-			_vertexData5[index*16+14] = 0;
-			_vertexData5[index*16+15] = 0;
+			_vertexData5[index*16+14] = newParticle.startAlpha;
+			_vertexData5[index*16+15] = newParticle.endAlpha;
 			
 			_vertexBufferDirty5 = true;
+		}
+		
+		public function upadteParticleColor(index:int, startR:Number, startG:Number, startB:Number, endR:Number, endG:Number, endB:Number ,startPercent:Number,endPercent:Number):void
+		{
+			// va4 va6 colors
+			var i32:uint = index*32;
+			
+			_vertexData4[i32] =  startR;
+			_vertexData4[i32+1] =  startG;
+			_vertexData4[i32+2] =  startB;
+			_vertexData4[i32+3] =  startPercent;
+			_vertexData4[i32+4] =  endR;
+			_vertexData4[i32+5] =  endG;
+			_vertexData4[i32+6] =  endB;
+			_vertexData4[i32+7] =  endPercent;
+			
+			_vertexData4[i32+8] =  startR;
+			_vertexData4[i32+9] =  startG;
+			_vertexData4[i32+10] =  startB;
+			_vertexData4[i32+11] =  startPercent;
+			_vertexData4[i32+12] =  endR;
+			_vertexData4[i32+13] =  endG;
+			_vertexData4[i32+14] =  endB;
+			_vertexData4[i32+15] =  endPercent;
+			
+			_vertexData4[i32+16] =  startR;
+			_vertexData4[i32+17] =  startG;
+			_vertexData4[i32+18] =  startB;
+			_vertexData4[i32+19] =  startPercent;
+			_vertexData4[i32+20] =  endR;
+			_vertexData4[i32+21] =  endG;
+			_vertexData4[i32+22] =  endB;
+			_vertexData4[i32+23] =  endPercent;
+			
+			_vertexData4[i32+24] =  startR;
+			_vertexData4[i32+25] =  startG;
+			_vertexData4[i32+26] =  startB;
+			_vertexData4[i32+27] =  startPercent;
+			_vertexData4[i32+28] =  endR;
+			_vertexData4[i32+29] =  endG;
+			_vertexData4[i32+30] =  endB;
+			_vertexData4[i32+31] =  endPercent;
+			
+			_vertexBufferDirty4 = true;
+			
 		}
 		
 		override public function render(context:Context3D, faceList:Vector.<Face>, startTri:uint, numTris:uint):void
@@ -429,12 +438,15 @@ package de.nulldesign.nd2d.effect
 			
 			AGAL.sub("v3","vt3.x","vc4.y");
 			
-			AGAL.mov("v1","va5"); //uv
+			AGAL.mov("v1","va5.xy"); //uv
 			
-			AGAL.mov("vt1","vc4.y");
-			AGAL.lerp("vt1","va4","va6","vt0.x");
-			AGAL.mov("v0","vt1"); //color
+			AGAL.sub("vt2.x","vt0.x","va4.w");
+			AGAL.sub("vt2.y","va6.w","va4.w" );
+			AGAL.div("vt2.x","vt2.x","vt2.y");
 			
+			AGAL.lerp("vt1.xyz","va4.xyz","va6.xyz","vt2.x"); //color lerp
+			AGAL.mov("v0","vt1.xyz"); //color
+			AGAL.mov("v2","va5.w");//alpha
 //			var vc1:uint;
 //			var vc2:uint;
 //			var vci:uint;
@@ -465,10 +477,10 @@ package de.nulldesign.nd2d.effect
 				AGAL.kil("v3.x");
 				
 //			}
-			AGAL.tex("ft0","v1","fs0","2d","repeat","nomip");
+			AGAL.tex("ft0","v1.xy","fs0","2d","repeat","nomip");
 	      
-			AGAL.mul("ft0","ft0","v0.xyz");
-			AGAL.mul("ft0","ft0","v0.w");
+//			AGAL.mul("ft0","ft0","v0");
+			AGAL.mul("ft0","ft0","v2.x");
 			AGAL.mov("oc","ft0");
 			
 			return AGAL.code;

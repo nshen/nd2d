@@ -15,6 +15,8 @@ package de.nulldesign.nd2d.effect
 		
 		public var startColor:uint = 0xffffff;
 		public var endColor:uint = 0xffffff;
+		public var startColorPercent:Number = 0 ;
+		public var endColorPercent:Number = 1;
 		
 		public var startAlpha:Number = 1;
 		public var endAlpha:Number = 1;
