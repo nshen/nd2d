@@ -528,7 +528,7 @@ package de.nulldesign.nd2d.effect
 //			}
 			AGAL.tex("ft0","v1.xy","fs0","2d","repeat","nomip");
 	      
-//			AGAL.mul("ft0","ft0","v0");
+			AGAL.mul("ft0","ft0","v0");
 			AGAL.mul("ft0","ft0","v2.x");
 			AGAL.mov("oc","ft0");
 			
