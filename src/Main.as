@@ -37,7 +37,7 @@ package
 	
 	import de.nulldesign.nd2d.display.Scene2D;
 	import de.nulldesign.nd2d.display.World2D;
-	import de.nulldesign.nd2d.effect.affector.AlphaAffector;
+	import de.nulldesign.nd2d.effect.modifier.AlphaModifier;
 	
 	import flash.display.StageAlign;
 	import flash.display.StageDisplayState;

@@ -2,9 +2,9 @@ package de.nulldesign.nd2d.effect
 {
 	import com.adobe.utils.AGALMiniAssembler;
 	
-	import de.nulldesign.nd2d.effect.affector.AffectorBase;
-	import de.nulldesign.nd2d.effect.affector.AlphaAffector;
-	import de.nulldesign.nd2d.effect.affector.SizeAffector;
+	import de.nulldesign.nd2d.effect.modifier.ModifierBase;
+	import de.nulldesign.nd2d.effect.modifier.AlphaModifier;
+	import de.nulldesign.nd2d.effect.modifier.SizeModifier;
 	import de.nulldesign.nd2d.geom.Face;
 	import de.nulldesign.nd2d.materials.AMaterial;
 	import de.nulldesign.nd2d.materials.shader.ShaderCache;
@@ -412,12 +412,12 @@ package de.nulldesign.nd2d.effect
 			AGAL.sat("vt0.x","vt0.x");
 			
 			//sizeAffector: vc 16 , 17 , 18 , 19 [x,y,0,percent]
-			if(_particleSystem.sizeAffector.bufferData.length > 4) // 2 frames at least
+			if(_particleSystem.sizeModifier.bufferData.length > 4) // 2 frames at least
 			{
 				//todo:clear vt8
 				vc1 = 16;
 				AGAL.mov("vt4","vc4.x") //clear
-				for(vci = 0 ; vci < AffectorBase.GPU_MAX_FRAMES - 1 ; vci++,vc1++)
+				for(vci = 0 ; vci < ModifierBase.GPU_MAX_FRAMES - 1 ; vci++,vc1++)
 				{
 					vc2 = vc1 + 1 ;
 					AGAL.sge("vt6.x","vt0.x","vc"+vc1+".w"); 
@@ -591,10 +591,10 @@ package de.nulldesign.nd2d.effect
 //				context.setProgramConstantsFromVector(Context3DProgramType.VERTEX,10,alphaEffector.bufferData, alphaEffector.keyframeCount);
 //			}
 			
-			var sizeEffector:SizeAffector = _particleSystem.sizeAffector; // vc 16 , 17 , 18 , 19
-			if(sizeEffector.keyframeCount > 0 )
+			var sizeModifier:SizeModifier = _particleSystem.sizeModifier; // vc 16 , 17 , 18 , 19
+			if(sizeModifier.keyframeCount > 0 )
 			{
-				context.setProgramConstantsFromVector(Context3DProgramType.VERTEX,16,sizeEffector.bufferData,sizeEffector.keyframeCount);
+				context.setProgramConstantsFromVector(Context3DProgramType.VERTEX,16,sizeModifier.bufferData,sizeModifier.keyframeCount);
 			}
 			
 		}

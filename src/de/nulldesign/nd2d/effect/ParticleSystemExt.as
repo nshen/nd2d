@@ -4,9 +4,9 @@ package de.nulldesign.nd2d.effect
 	import de.nulldesign.nd2d.display.Node2D;
 	import de.nulldesign.nd2d.effect.ParticleEmitterBase;
 	import de.nulldesign.nd2d.effect.ParticleSystemExtMaterial;
-	import de.nulldesign.nd2d.effect.affector.AlphaAffector;
-	import de.nulldesign.nd2d.effect.affector.ColorAffector;
-	import de.nulldesign.nd2d.effect.affector.SizeAffector;
+	import de.nulldesign.nd2d.effect.modifier.AlphaModifier;
+	import de.nulldesign.nd2d.effect.modifier.ColorModifier;
+	import de.nulldesign.nd2d.effect.modifier.SizeModifier;
 	import de.nulldesign.nd2d.materials.texture.Texture2D;
 	import de.nulldesign.nd2d.utils.NumberUtil;
 	import de.nulldesign.nd2d.utils.VectorUtil;
@@ -20,9 +20,9 @@ package de.nulldesign.nd2d.effect
 		protected var _emitter:ParticleEmitterBase;
 		protected var _material:ParticleSystemExtMaterial;
 		
-		protected var _alphaAffector:AlphaAffector = new AlphaAffector();
-		protected var _sizeAffector:SizeAffector = new SizeAffector();
-		protected var _colorAffector:ColorAffector = new ColorAffector();
+		protected var _alphaModifier:AlphaModifier = new AlphaModifier();
+		protected var _sizeModifier:SizeModifier = new SizeModifier();
+		protected var _colorModifier:ColorModifier = new ColorModifier();
 		
 		protected var _maxCapacity:uint = 0 ;
 		protected var _lastIndex:int = -1;
@@ -54,19 +54,19 @@ package de.nulldesign.nd2d.effect
 		
 		//////////////////////////////
 		// affectors
-		public function get sizeAffector():SizeAffector
+		public function get sizeModifier():SizeModifier
 		{
-			return _sizeAffector;
+			return _sizeModifier;
 		}
 
-		public function get alphaAffector():AlphaAffector
+		public function get alphaModifier():AlphaModifier
 		{
-			return _alphaAffector;
+			return _alphaModifier;
 		}
 
-		public function get colorAffector():ColorAffector
+		public function get colorModifier():ColorModifier
 		{
-			return _colorAffector;
+			return _colorModifier;
 		}
 		////////////////////////////////////////
 		public function get particles():Vector.<ParticleExt>
@@ -141,9 +141,9 @@ package de.nulldesign.nd2d.effect
 			if(_emitter && _emitting)
 				_emitter.update(elapsed);
 			
-			if(_colorAffector.keyframeCount > 0)
-			{
-			}
+//			if(_colorAffector.keyframeCount > 0)
+//			{
+//			}
 			
 				updateAffectors();
 			
@@ -164,20 +164,20 @@ package de.nulldesign.nd2d.effect
 					continue;
 				
 				percent = past / p.lifeTime;
-				if(_colorAffector.keyframeCount > 1)
+				if(_colorModifier.keyframeCount > 1)
 				{
 					fi1 = 0 ;
 					fi2 = fi1 + 4;
-					while(fi2 < _colorAffector._colorVector.length)
+					while(fi2 < _colorModifier._colorVector.length)
 					{
 						
-						f1Percent = _colorAffector._colorVector[fi1];
-						f2Percent = _colorAffector._colorVector[fi2];
+						f1Percent = _colorModifier._colorVector[fi1];
+						f2Percent = _colorModifier._colorVector[fi2];
 						if(percent >= f1Percent && percent < f2Percent)
 						{
 							_material.upadteParticleColor(
-								p.index,_colorAffector._colorVector[fi1+1],_colorAffector._colorVector[fi1+2],_colorAffector._colorVector[fi1+3],
-								_colorAffector._colorVector[fi2+1] , _colorAffector._colorVector[fi2+2] , _colorAffector._colorVector[fi2+3],
+								p.index,_colorModifier._colorVector[fi1+1],_colorModifier._colorVector[fi1+2],_colorModifier._colorVector[fi1+3],
+								_colorModifier._colorVector[fi2+1] , _colorModifier._colorVector[fi2+2] , _colorModifier._colorVector[fi2+3],
 								f1Percent,f2Percent
 							)
 							break ;
@@ -187,21 +187,21 @@ package de.nulldesign.nd2d.effect
 					}
 					
 				};
-				if(_alphaAffector.keyframeCount > 1)
+				if(_alphaModifier.keyframeCount > 1)
 				{
 					fi1 = 0 ;
 					fi2 = fi1 + 4;
-					while(fi2 < _alphaAffector._alphaVector.length)
+					while(fi2 < _alphaModifier._alphaVector.length)
 					{
 						
-						f1Percent = _alphaAffector._alphaVector[fi1];
-						f2Percent = _alphaAffector._alphaVector[fi2];
+						f1Percent = _alphaModifier._alphaVector[fi1];
+						f2Percent = _alphaModifier._alphaVector[fi2];
 						if(percent >= f1Percent && percent < f2Percent)
 						{
 							_material.updateParticleAlpha(
 								p.index,
-								_alphaAffector._alphaVector[fi1+1],
-								_alphaAffector._alphaVector[fi2+1],
+								_alphaModifier._alphaVector[fi1+1],
+								_alphaModifier._alphaVector[fi2+1],
 								f1Percent,f2Percent
 							)
 							break ;
@@ -213,7 +213,7 @@ package de.nulldesign.nd2d.effect
 
 			}
 			
-			if(_colorAffector)
+			if(_colorModifier)
 			{
 				
 				

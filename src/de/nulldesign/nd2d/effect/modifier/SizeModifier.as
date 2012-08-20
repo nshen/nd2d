@@ -1,10 +1,10 @@
-package de.nulldesign.nd2d.effect.affector
+package de.nulldesign.nd2d.effect.modifier
 {
-	public class SizeAffector extends AffectorBase
+	public class SizeModifier extends ModifierBase
 	{
 		private var _sizeAffectorVect43:Vector.<Number> = new <Number>[]; //[x,y,0,lifePercent]
 		
-		public function SizeAffector()
+		public function SizeModifier()
 		{
 			super();
 		}

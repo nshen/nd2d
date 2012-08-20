@@ -1,10 +1,10 @@
-package de.nulldesign.nd2d.effect.affector
+package de.nulldesign.nd2d.effect.modifier
 {
-	public class AlphaAffector extends AffectorBase
+	public class AlphaModifier extends ModifierBase
 	{
 		public var _alphaVector:Vector.<Number>; //[lifePercent,a,0,0]
 		
-		public function AlphaAffector()
+		public function AlphaModifier()
 		{
 			_alphaVector  = new Vector.<Number>();
 		}

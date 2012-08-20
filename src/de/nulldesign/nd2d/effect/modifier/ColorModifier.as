@@ -1,10 +1,10 @@
-package de.nulldesign.nd2d.effect.affector
+package de.nulldesign.nd2d.effect.modifier
 {
-	public class ColorAffector extends AffectorBase
+	public class ColorModifier extends ModifierBase
 	{
 		public var _colorVector:Vector.<Number>; //[lifepercent,r,g,b]
 		
-		public function ColorAffector()
+		public function ColorModifier()
 		{
 			_colorVector = new Vector.<Number>;
 		}
