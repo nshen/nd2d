@@ -120,9 +120,9 @@ package tests {
 			
 			particles = new ParticleSystemExt(Texture2D.textureFromBitmapData(new particleClass().bitmapData) ,10000);
 			particles.emitter = emitter;
-//			particles.colorAffector.addKeyFrame(0,  0,1,0);
-//			particles.colorAffector.addKeyFrame(0.5,1,0,0);
-//			particles.colorAffector.addKeyFrame(1,0,0,1);
+			particles.colorModifier.addKeyFrame(0,  0,1,0);
+			particles.colorModifier.addKeyFrame(0.5,1,0,0);
+			particles.colorModifier.addKeyFrame(1,0,0,1);
 			
 			particles.alphaModifier.addKeyFrame(0,1);
 			particles.alphaModifier.addKeyFrame(0.5,0);

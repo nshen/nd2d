@@ -164,29 +164,8 @@ package de.nulldesign.nd2d.effect
 					continue;
 				
 				percent = past / p.lifeTime;
-				if(_colorModifier.keyframeCount > 1)
-				{
-					fi1 = 0 ;
-					fi2 = fi1 + 4;
-					while(fi2 < _colorModifier._colorVector.length)
-					{
-						
-						f1Percent = _colorModifier._colorVector[fi1];
-						f2Percent = _colorModifier._colorVector[fi2];
-						if(percent >= f1Percent && percent < f2Percent)
-						{
-							_material.upadteParticleColor(
-								p.index,_colorModifier._colorVector[fi1+1],_colorModifier._colorVector[fi1+2],_colorModifier._colorVector[fi1+3],
-								_colorModifier._colorVector[fi2+1] , _colorModifier._colorVector[fi2+2] , _colorModifier._colorVector[fi2+3],
-								f1Percent,f2Percent
-							)
-							break ;
-						}
-						fi1 = fi2;
-						fi2 = fi1 + 4;
-					}
-					
-				};
+				_colorModifier.modify(p,percent,_material);
+
 				if(_alphaModifier.keyframeCount > 1)
 				{
 					fi1 = 0 ;
@@ -213,11 +192,6 @@ package de.nulldesign.nd2d.effect
 
 			}
 			
-			if(_colorModifier)
-			{
-				
-				
-			}
 			
 		}		
 		
