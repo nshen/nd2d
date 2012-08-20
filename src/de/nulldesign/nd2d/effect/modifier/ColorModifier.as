@@ -40,17 +40,19 @@ package de.nulldesign.nd2d.effect.modifier
 				var fi2:uint = fi1 + 4;
 				while(fi2 < _colorVector.length)
 				{
-					
 					f1Percent = _colorVector[fi1];
 					f2Percent = _colorVector[fi2];
-					if(particleLifePercent >= f1Percent && particleLifePercent < f2Percent)
+					if((particle.startColorPercent != f1Percent || particle.endColorPercent != f2Percent) && particleLifePercent >= f1Percent && particleLifePercent < f2Percent)
 					{
-						material.upadteParticleColor(
-							particle.index,
-							_colorVector[fi1+1],_colorVector[fi1+2],_colorVector[fi1+3],
-							_colorVector[fi2+1] , _colorVector[fi2+2] , _colorVector[fi2+3],
-							f1Percent,f2Percent
-						)
+						particle.startColorPercent = f1Percent;
+						particle.endColorPercent = f2Percent;
+						particle.startR = _colorVector[fi1+1];
+						particle.startG = _colorVector[fi1+2];
+						particle.startB = _colorVector[fi1+3];
+						particle.endR = _colorVector[fi2+1];
+						particle.endG = _colorVector[fi2+2];
+						particle.endB = _colorVector[fi2+3];
+						material.updateParticleColor(particle);
 						break ;
 					}
 					fi1 = fi2;

@@ -2,8 +2,8 @@ package de.nulldesign.nd2d.effect
 {
 	import com.adobe.utils.AGALMiniAssembler;
 	
-	import de.nulldesign.nd2d.effect.modifier.ModifierBase;
 	import de.nulldesign.nd2d.effect.modifier.AlphaModifier;
+	import de.nulldesign.nd2d.effect.modifier.ModifierBase;
 	import de.nulldesign.nd2d.effect.modifier.SizeModifier;
 	import de.nulldesign.nd2d.geom.Face;
 	import de.nulldesign.nd2d.materials.AMaterial;
@@ -94,206 +94,247 @@ package de.nulldesign.nd2d.effect
 			_indexBufferDirty = true ;
 		}
 		
-		private static var tmpVec3 : Vector3D = new Vector3D;
 		
 		public function updateParticle(newParticle:ParticleExt ):void
 		{
-			var index:int = newParticle.index;
+			upadteParticlePos(newParticle);
+			updateParticleSize(newParticle);
+			updateParticleTime(newParticle);
+			updateParticleRot(newParticle);
+			updateParticleVel(newParticle);
+			updateParticleColor(newParticle);
+			updateParticleUV(newParticle);
+			updateParticleAlpha(newParticle);
+		}
+		
+		public function updateParticleVel(p:ParticleExt):void
+		{
+			// va3 particle velocity
+			var tmpV:Vector3D = new Vector3D();
+			tmpV.copyFrom(p.dir);
+			tmpV.scaleBy(p.vel);
+			var i16:uint = p.index * 16;
 			
-			_vertexData0[index*12+0] = newParticle.pos.x;
-			_vertexData0[index*12+1] = newParticle.pos.y;
-			_vertexData0[index*12+2] = newParticle.pos.z;
+			_vertexData3[i16] = tmpV.x;
+			_vertexData3[i16+1] = tmpV.y;
+			_vertexData3[i16+2] = 0;
+			_vertexData3[i16+3] = 0;
 			
-			_vertexData0[index*12+3] = newParticle.pos.x;
-			_vertexData0[index*12+4] = newParticle.pos.y;
-			_vertexData0[index*12+5] = newParticle.pos.z;
+			_vertexData3[i16+4] = tmpV.x;
+			_vertexData3[i16+5] = tmpV.y;
+			_vertexData3[i16+6] = 0;
+			_vertexData3[i16+7] = 0;
 			
-			_vertexData0[index*12+6] = newParticle.pos.x;
-			_vertexData0[index*12+7] = newParticle.pos.y;
-			_vertexData0[index*12+8] = newParticle.pos.z;
+			_vertexData3[i16+8] = tmpV.x;
+			_vertexData3[i16+9] = tmpV.y;
+			_vertexData3[i16+10] = 0;
+			_vertexData3[i16+11] = 0;
 			
-			_vertexData0[index*12+9] = newParticle.pos.x;
-			_vertexData0[index*12+10] = newParticle.pos.y;
-			_vertexData0[index*12+11] = newParticle.pos.z;
+			_vertexData3[i16+12] = tmpV.x;
+			_vertexData3[i16+13] = tmpV.y;
+			_vertexData3[i16+14] = 0;
+			_vertexData3[i16+15] = 0;
 			
-			_vertexBufferDirty = true ;
-			
-			// va1 size
-			var halfStartSizeX:Number = newParticle.startSizeX * 0.5;
-			var halfStartSizeY:Number = newParticle.startSizeY * 0.5;
-			var halfEndSizeX:Number = newParticle.endSizeX * 0.5;
-			var halfEndSizeY:Number = newParticle.endSizeY * 0.5;
-			
-			
-			_vertexData1[index*16] = -halfStartSizeX;
-			_vertexData1[index*16+1] = halfStartSizeY;
-			_vertexData1[index*16+2] = -halfEndSizeX;
-			_vertexData1[index*16+3] = halfEndSizeY;
-			
-			_vertexData1[index*16+4] = halfStartSizeX;
-			_vertexData1[index*16+5] = halfStartSizeY;
-			_vertexData1[index*16+6] = halfEndSizeX;
-			_vertexData1[index*16+7] = halfEndSizeY;
-			
-			_vertexData1[index*16+8] = halfStartSizeX;
-			_vertexData1[index*16+9] = -halfStartSizeY;
-			_vertexData1[index*16+10] = halfEndSizeX;
-			_vertexData1[index*16+11] = -halfEndSizeY;
-			
-			_vertexData1[index*16+12] = -halfStartSizeX;
-			_vertexData1[index*16+13] = -halfStartSizeY;
-			_vertexData1[index*16+14] = -halfEndSizeX;
-			_vertexData1[index*16+15] = -halfEndSizeY;
-			
-			_vertexBufferDirty1 = true;
-			
-			
+			_vertexBufferDirty3 = true;
+		}
+		
+		public function updateParticleRot(p:ParticleExt):void
+		{
 			// va2  (startTime , lifeTime ,rot,rotVel)
-			_vertexData2[index*16] = newParticle.startTime;
-			_vertexData2[index*16+1] = newParticle.lifeTime;
-			_vertexData2[index*16+2] = newParticle.rot;
-			_vertexData2[index*16+3] = newParticle.rotVel;
+			var i16:int = p.index * 16;
 			
-			_vertexData2[index*16+4] = newParticle.startTime;
-			_vertexData2[index*16+5] = newParticle.lifeTime;
-			_vertexData2[index*16+6] = newParticle.rot;
-			_vertexData2[index*16+7] = newParticle.rotVel;
+			_vertexData2[i16+2] = p.rot;
+			_vertexData2[i16+3] = p.rotVel;
 			
-			_vertexData2[index*16+8] = newParticle.startTime;
-			_vertexData2[index*16+9] = newParticle.lifeTime;
-			_vertexData2[index*16+10] = newParticle.rot;
-			_vertexData2[index*16+11] = newParticle.rotVel;
+			_vertexData2[i16+6] = p.rot;
+			_vertexData2[i16+7] = p.rotVel;
 			
-			_vertexData2[index*16+12] = newParticle.startTime;
-			_vertexData2[index*16+13] = newParticle.lifeTime;
-			_vertexData2[index*16+14] = newParticle.rot;
-			_vertexData2[index*16+15] = newParticle.rotVel;
+			_vertexData2[i16+10] = p.rot;
+			_vertexData2[i16+11] = p.rotVel;
+			
+			_vertexData2[i16+14] = p.rot;
+			_vertexData2[i16+15] = p.rotVel;
 			
 			_vertexBufferDirty2 = true;
 			
-			// va3 particle velocity
-			tmpVec3.copyFrom(newParticle.dir);
-			tmpVec3.scaleBy(newParticle.vel);
+		}
+		
+		public function updateParticleTime(p:ParticleExt):void
+		{
+			// va2  (startTime , lifeTime ,rot,rotVel)
+			var i16:int = p.index * 16;
 			
-			_vertexData3[index*16] = tmpVec3.x;
-			_vertexData3[index*16+1] = tmpVec3.y;
-			_vertexData3[index*16+2] = tmpVec3.z;
-			_vertexData3[index*16+3] = 0;
+			_vertexData2[i16] = p.startTime;
+			_vertexData2[i16+1] = p.lifeTime;
 			
-			_vertexData3[index*16+4] = tmpVec3.x;
-			_vertexData3[index*16+5] = tmpVec3.y;
-			_vertexData3[index*16+6] = tmpVec3.z;
-			_vertexData3[index*16+7] = 0;
+			_vertexData2[i16+4] = p.startTime;
+			_vertexData2[i16+5] = p.lifeTime;
 			
-			_vertexData3[index*16+8] = tmpVec3.x;
-			_vertexData3[index*16+9] = tmpVec3.y;
-			_vertexData3[index*16+10] = tmpVec3.z;
-			_vertexData3[index*16+11] = 0;
+			_vertexData2[i16+8] = p.startTime;
+			_vertexData2[i16+9] = p.lifeTime;
 			
-			_vertexData3[index*16+12] = tmpVec3.x;
-			_vertexData3[index*16+13] = tmpVec3.y;
-			_vertexData3[index*16+14] = tmpVec3.z;
-			_vertexData3[index*16+15] = 0;
+			_vertexData2[i16+12] = p.startTime;
+			_vertexData2[i16+13] = p.lifeTime;
 			
-			_vertexBufferDirty3 = true;
-			
-			upadteParticleColor(index,newParticle.startR,newParticle.startG,newParticle.startB,newParticle.endR,newParticle.endG,newParticle.endB,newParticle.startColorPercent,newParticle.endColorPercent);
-			
-			var i16:uint = index * 16;
+			_vertexBufferDirty2 = true;
+		}
+		
+		public function updateParticleUV(p:ParticleExt):void
+		{
+			//va5 (u,v,0,0)
+			var i16:uint = p.index * 16;
 			_vertexData5[i16] = 0;
 			_vertexData5[i16+1] = 0;
-//			_vertexData5[i16+2] = startAlpha;
-//			_vertexData5[i16+3] = endAlpha;
+			_vertexData5[i16+2] = 0;
+			_vertexData5[i16+3] = 0;
 			
 			_vertexData5[i16+4] = 1;
 			_vertexData5[i16+5] = 0;
-//			_vertexData5[i16+6] = startAlpha;
-//			_vertexData5[i16+7] = endAlpha;
+			_vertexData5[i16+6] = 0;
+			_vertexData5[i16+7] = 0;
 			
 			_vertexData5[i16+8] = 1;
 			_vertexData5[i16+9] = 1;
-//			_vertexData5[i16+10] = startAlpha;
-//			_vertexData5[i16+11] = endAlpha;
+			_vertexData5[i16+10] = 0;
+			_vertexData5[i16+11] = 0;
 			
 			_vertexData5[i16+12] = 0;
 			_vertexData5[i16+13] = 1;
-//			_vertexData5[i16+14] = startAlpha;
-//			_vertexData5[i16+15] = endAlpha;
+			_vertexData5[i16+14] = 0;
+			_vertexData5[i16+15] = 0;
 			
 			_vertexBufferDirty5 = true;
 			
-			updateParticleAlpha(index,newParticle.startAlphaPercent , newParticle.endAlphaPercent , newParticle.startAlpha,newParticle.endAlpha);
-
 		}
 		
-		public function updateParticleAlpha(index:int, startAlpha:Number, endAlpha:Number, startPercent:Number , endPercent:Number ):void
+		public function updateParticleSize(p:ParticleExt):void
+		{
+			// va1 size
+			var halfStartSizeX:Number = p.startSizeX * 0.5;
+			var halfStartSizeY:Number = p.startSizeY * 0.5;
+			var halfEndSizeX:Number = p.endSizeX * 0.5;
+			var halfEndSizeY:Number = p.endSizeY * 0.5;
+			
+			var i16:Number = p.index * 16;
+			
+			_vertexData1[i16] = -halfStartSizeX;
+			_vertexData1[i16+1] = halfStartSizeY;
+			_vertexData1[i16+2] = -halfEndSizeX;
+			_vertexData1[i16+3] = halfEndSizeY;
+			
+			_vertexData1[i16+4] = halfStartSizeX;
+			_vertexData1[i16+5] = halfStartSizeY;
+			_vertexData1[i16+6] = halfEndSizeX;
+			_vertexData1[i16+7] = halfEndSizeY;
+			
+			_vertexData1[i16+8] = halfStartSizeX;
+			_vertexData1[i16+9] = -halfStartSizeY;
+			_vertexData1[i16+10] = halfEndSizeX;
+			_vertexData1[i16+11] = -halfEndSizeY;
+			
+			_vertexData1[i16+12] = -halfStartSizeX;
+			_vertexData1[i16+13] = -halfStartSizeY;
+			_vertexData1[i16+14] = -halfEndSizeX;
+			_vertexData1[i16+15] = -halfEndSizeY;
+			
+			_vertexBufferDirty1 = true;
+			
+		}
+		
+		public function upadteParticlePos(p:ParticleExt):void
+		{
+			var i12:int = p.index * 12;
+			
+			_vertexData0[i12+0] = p.pos.x;
+			_vertexData0[i12+1] = p.pos.y;
+			_vertexData0[i12+2] = p.pos.z;
+			
+			_vertexData0[i12+3] = p.pos.x;
+			_vertexData0[i12+4] = p.pos.y;
+			_vertexData0[i12+5] = p.pos.z;
+			
+			_vertexData0[i12+6] = p.pos.x;
+			_vertexData0[i12+7] = p.pos.y;
+			_vertexData0[i12+8] = p.pos.z;
+			
+			_vertexData0[i12+9] = p.pos.x;
+			_vertexData0[i12+10] = p.pos.y;
+			_vertexData0[i12+11] = p.pos.z;
+			
+			_vertexBufferDirty = true ;
+			
+		}
+		
+		public function updateParticleAlpha(p:ParticleExt):void
 		{
 			// va5 uv alpha.
-			var i16:uint = index * 16;
-			_vertexData7[i16] = startPercent;
-			_vertexData7[i16+1] = endPercent;
-			_vertexData7[i16+2] = startAlpha;
-			_vertexData7[i16+3] = endAlpha;
+			var i16:uint = p.index * 16;
+			_vertexData7[i16] = p.startAlphaPercent;
+			_vertexData7[i16+1] = p.endAlphaPercent;
+			_vertexData7[i16+2] = p.startAlpha;
+			_vertexData7[i16+3] = p.endAlpha;
 			
-			_vertexData7[i16+4] = startPercent;
-			_vertexData7[i16+5] = endPercent;
-			_vertexData7[i16+6] = startAlpha;
-			_vertexData7[i16+7] = endAlpha;
+			_vertexData7[i16+4] = p.startAlphaPercent;
+			_vertexData7[i16+5] = p.endAlphaPercent;
+			_vertexData7[i16+6] = p.startAlpha;
+			_vertexData7[i16+7] = p.endAlpha;
 			
-			_vertexData7[i16+8] = startPercent;
-			_vertexData7[i16+9] = endPercent;
-			_vertexData7[i16+10] = startAlpha;
-			_vertexData7[i16+11] = endAlpha;
+			_vertexData7[i16+8] = p.startAlphaPercent;
+			_vertexData7[i16+9] = p.endAlphaPercent;
+			_vertexData7[i16+10] = p.startAlpha;
+			_vertexData7[i16+11] = p.endAlpha;
 			
-			_vertexData7[i16+12] = startPercent;
-			_vertexData7[i16+13] = endPercent;
-			_vertexData7[i16+14] = startAlpha;
-			_vertexData7[i16+15] = endAlpha;
+			_vertexData7[i16+12] = p.startAlphaPercent;
+			_vertexData7[i16+13] = p.endAlphaPercent;
+			_vertexData7[i16+14] = p.startAlpha;
+			_vertexData7[i16+15] = p.endAlpha;
 			
 			_vertexBufferDirty7 = true;
 		}		
 		
+
+
 		
-		public function upadteParticleColor(index:int, startR:Number, startG:Number, startB:Number, endR:Number, endG:Number, endB:Number ,startPercent:Number,endPercent:Number):void
+		public function updateParticleColor(p:ParticleExt):void
 		{
 			// va4 va6 colors
-			var i32:uint = index*32;
+			var i32:uint = p.index*32;
 			
-			_vertexData4[i32] =  startR;
-			_vertexData4[i32+1] =  startG;
-			_vertexData4[i32+2] =  startB;
-			_vertexData4[i32+3] =  startPercent;
-			_vertexData4[i32+4] =  endR;
-			_vertexData4[i32+5] =  endG;
-			_vertexData4[i32+6] =  endB;
-			_vertexData4[i32+7] =  endPercent;
+			_vertexData4[i32] =  p.startR;
+			_vertexData4[i32+1] =  p.startG;
+			_vertexData4[i32+2] =  p.startB;
+			_vertexData4[i32+3] =  p.startColorPercent;
+			_vertexData4[i32+4] =  p.endR;
+			_vertexData4[i32+5] =  p.endG;
+			_vertexData4[i32+6] =  p.endB;
+			_vertexData4[i32+7] =  p.endColorPercent;
 			
-			_vertexData4[i32+8] =  startR;
-			_vertexData4[i32+9] =  startG;
-			_vertexData4[i32+10] =  startB;
-			_vertexData4[i32+11] =  startPercent;
-			_vertexData4[i32+12] =  endR;
-			_vertexData4[i32+13] =  endG;
-			_vertexData4[i32+14] =  endB;
-			_vertexData4[i32+15] =  endPercent;
+			_vertexData4[i32+8] =  p.startR;
+			_vertexData4[i32+9] =  p.startG;
+			_vertexData4[i32+10] =  p.startB;
+			_vertexData4[i32+11] =  p.startColorPercent;
+			_vertexData4[i32+12] =  p.endR;
+			_vertexData4[i32+13] =  p.endG;
+			_vertexData4[i32+14] =  p.endB;
+			_vertexData4[i32+15] =  p.endColorPercent;
 			
-			_vertexData4[i32+16] =  startR;
-			_vertexData4[i32+17] =  startG;
-			_vertexData4[i32+18] =  startB;
-			_vertexData4[i32+19] =  startPercent;
-			_vertexData4[i32+20] =  endR;
-			_vertexData4[i32+21] =  endG;
-			_vertexData4[i32+22] =  endB;
-			_vertexData4[i32+23] =  endPercent;
+			_vertexData4[i32+16] =  p.startR;
+			_vertexData4[i32+17] =  p.startG;
+			_vertexData4[i32+18] =  p.startB;
+			_vertexData4[i32+19] =  p.startColorPercent;
+			_vertexData4[i32+20] =  p.endR;
+			_vertexData4[i32+21] =  p.endG;
+			_vertexData4[i32+22] =  p.endB;
+			_vertexData4[i32+23] =  p.endColorPercent;
 			
-			_vertexData4[i32+24] =  startR;
-			_vertexData4[i32+25] =  startG;
-			_vertexData4[i32+26] =  startB;
-			_vertexData4[i32+27] =  startPercent;
-			_vertexData4[i32+28] =  endR;
-			_vertexData4[i32+29] =  endG;
-			_vertexData4[i32+30] =  endB;
-			_vertexData4[i32+31] =  endPercent;
+			_vertexData4[i32+24] =  p.startR;
+			_vertexData4[i32+25] =  p.startG;
+			_vertexData4[i32+26] =  p.startB;
+			_vertexData4[i32+27] =  p.startColorPercent;
+			_vertexData4[i32+28] =  p.endR;
+			_vertexData4[i32+29] =  p.endG;
+			_vertexData4[i32+30] =  p.endB;
+			_vertexData4[i32+31] =  p.endColorPercent;
 			
 			_vertexBufferDirty4 = true;
 			

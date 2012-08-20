@@ -33,6 +33,7 @@ package de.nulldesign.nd2d.effect
 		
 		override protected function initParticle(newParticle:ParticleExt):void
 		{ 
+			
 //			newParticle.color = color + colorRange * Math.random();
 			newParticle.startColor = 0xff0000;
 			newParticle.endColor = 0x0000ff;

@@ -13,8 +13,8 @@ package de.nulldesign.nd2d.effect
 		public var rot : Number = 0;
 		public var rotVel : Number = 0;
 		
-		public var startColor:uint = 0xffffff;
-		public var endColor:uint = 0xffffff;
+//		public var startColor:uint = 0xffffff;
+//		public var endColor:uint = 0xffffff;
 		public var startColorPercent:Number = 0 ;
 		public var endColorPercent:Number = 1;
 		
@@ -54,31 +54,61 @@ package de.nulldesign.nd2d.effect
 			startAlpha = endAlpha = value;
 		}
 		
-		public function get startR():Number
+		public var startR:Number;
+		public var startG:Number;
+		public var startB:Number;
+		public var endR:Number;
+		public var endG:Number;
+		public var endB:Number;
+		
+		public function set startColor(value:Number):void
 		{
-			return ((startColor & 0xff0000) >> 16) / 0xff;
+			startR = value >> 16 & 0xff / 0xff;
+			startG = value >> 8 & 0xff / 0xff;
+			startB = value & 0xff / 0xff;
 		}
-		public function get startG():Number
+		public function set endColor(value:Number):void
 		{
-			return ((startColor & 0x00ff00) >> 8) / 0xff;
-		}
-		public function get startB():Number
-		{
-			return (startColor & 0x0000ff) / 0xff;
+			endR = value >> 16 & 0xff / 0xff;
+			endG = value >> 8 & 0xff / 0xff;
+			endB = value & 0xff / 0xff;
 		}
 		
-		public function get endR():Number
+		public function get startColor():Number
 		{
-			return ((endColor & 0xff0000) >> 16) / 0xff;
+			return startR << 16 | startG << 8 | startB;
 		}
-		public function get endG():Number
+		
+		public function get endColor():Number
 		{
-			return ((endColor & 0x00ff00) >> 8) / 0xff;
+			return endR << 16 | endG << 8 | endB;
 		}
-		public function get endB():Number
-		{
-			return (endColor & 0x0000ff) / 0xff;
-		}
+		
+//		public function get startR():Number
+//		{
+//			return ((startColor & 0xff0000) >> 16) / 0xff;
+//		}
+//		public function get startG():Number
+//		{
+//			return ((startColor & 0x00ff00) >> 8) / 0xff;
+//		}
+//		public function get startB():Number
+//		{
+//			return (startColor & 0x0000ff) / 0xff;
+//		}
+//		
+//		public function get endR():Number
+//		{
+//			return ((endColor & 0xff0000) >> 16) / 0xff;
+//		}
+//		public function get endG():Number
+//		{
+//			return ((endColor & 0x00ff00) >> 8) / 0xff;
+//		}
+//		public function get endB():Number
+//		{
+//			return (endColor & 0x0000ff) / 0xff;
+//		}
 		
 		public function reset():ParticleExt
 		{

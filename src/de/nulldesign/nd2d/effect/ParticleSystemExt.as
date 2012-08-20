@@ -2,14 +2,10 @@ package de.nulldesign.nd2d.effect
 {
 	import de.nulldesign.nd2d.display.Camera2D;
 	import de.nulldesign.nd2d.display.Node2D;
-	import de.nulldesign.nd2d.effect.ParticleEmitterBase;
-	import de.nulldesign.nd2d.effect.ParticleSystemExtMaterial;
 	import de.nulldesign.nd2d.effect.modifier.AlphaModifier;
 	import de.nulldesign.nd2d.effect.modifier.ColorModifier;
 	import de.nulldesign.nd2d.effect.modifier.SizeModifier;
 	import de.nulldesign.nd2d.materials.texture.Texture2D;
-	import de.nulldesign.nd2d.utils.NumberUtil;
-	import de.nulldesign.nd2d.utils.VectorUtil;
 	
 	import flash.display3D.Context3D;
 	import flash.utils.getTimer;
@@ -53,7 +49,6 @@ package de.nulldesign.nd2d.effect
 		}
 		
 		//////////////////////////////
-		// affectors
 		public function get sizeModifier():SizeModifier
 		{
 			return _sizeModifier;
@@ -105,19 +100,16 @@ package de.nulldesign.nd2d.effect
 		}
 		
 
-		
-		
-		
-		
-		public function stop(immediately : Boolean) : void
+		public function stop(immediately : Boolean = false) : void
 		{
 			_emitting = false;
 			if(immediately)
 			{	
-				for(var i:int = 0 ; i< _maxCapacity ; i++)
-				{
-//					_particles[i].die();
-				}
+			   for each (var p:ParticleExt in _particles)
+			   {
+				   p.lifeTime  = 0 ;
+				   _material.updateParticleTime(p);
+			   }
 			}
 		}
 		
@@ -136,26 +128,20 @@ package de.nulldesign.nd2d.effect
 		override protected function step(elapsed:Number):void 
 		{
 			currentTime  = (getTimer() - startTime) * 0.001; 
-
 			
-			if(_emitter && _emitting)
-				_emitter.update(elapsed);
-			
-//			if(_colorAffector.keyframeCount > 0)
-//			{
-//			}
-			
+			if(_emitting)
+			{
+				if(_emitter)
+					_emitter.update(elapsed);
 				updateAffectors();
-			
-
+			}
 		}
 		
 		private function updateAffectors():void
 		{
 			
 			var past:Number;
-			var fi1:uint ,fi2:uint; //index
-			var percent:Number ,f1Percent:Number ,f2Percent:Number;
+			var percent:Number;
 			
 			for each(var p:ParticleExt in _particles)
 			{
@@ -165,33 +151,8 @@ package de.nulldesign.nd2d.effect
 				
 				percent = past / p.lifeTime;
 				_colorModifier.modify(p,percent,_material);
-
-				if(_alphaModifier.keyframeCount > 1)
-				{
-					fi1 = 0 ;
-					fi2 = fi1 + 4;
-					while(fi2 < _alphaModifier._alphaVector.length)
-					{
-						
-						f1Percent = _alphaModifier._alphaVector[fi1];
-						f2Percent = _alphaModifier._alphaVector[fi2];
-						if(percent >= f1Percent && percent < f2Percent)
-						{
-							_material.updateParticleAlpha(
-								p.index,
-								_alphaModifier._alphaVector[fi1+1],
-								_alphaModifier._alphaVector[fi2+1],
-								f1Percent,f2Percent
-							)
-							break ;
-						}
-						fi1 = fi2;
-						fi2 = fi1 + 4;
-					}
-				}
-
+                _alphaModifier.modify(p,percent,_material);
 			}
-			
 			
 		}		
 		

@@ -131,10 +131,10 @@ package tests {
 			addChild(particles);
 			
 			
-//			particles.sizeAffector.addKeyFrame(0,0,0);
-//			particles.sizeAffector.addKeyFrame(0.6,50,50);
+			particles.sizeModifier.addKeyFrame(0,0,0);
+			particles.sizeModifier.addKeyFrame(0.6,50,50);
 //			particles.sizeAffector.addKeyFrame(0.5,200,200);
-//			particles.sizeAffector.addKeyFrame(1,0,0);
+			particles.sizeModifier.addKeyFrame(1,0,0);
 			
 			particles.start();
 			particles.blendMode = BlendModePresets.ADD_PREMULTIPLIED_ALPHA;
@@ -142,13 +142,18 @@ package tests {
 			addEventListener(MouseEvent.CLICK , onMouseClick);
 		}
 		
-		protected var state:uint = 0;
+		protected var state:uint = 5;
 		protected function onMouseClick(event:MouseEvent):void
 		{
 			switch(state)
 			{
+				case 5:
+					particles.stop(true);
+					state = 0;
+					break ;
 				case 0:
 					particles.emitter = burstEmitter;
+					particles.start();
 					state = 1;
 					break;
 				case 1:

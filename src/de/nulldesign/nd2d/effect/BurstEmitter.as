@@ -69,18 +69,24 @@ package de.nulldesign.nd2d.effect
 		
 		override public function update(elapsed:Number):void
 		{
-			return;
-		}
-		
-		override public function set particleSystem(value:ParticleSystemExt):void
-		{
-			super.particleSystem = value;
-			if( value )
+			if(_particleSystemDirty)
 			{
 				for each(var p:ParticleExt in _particleSystem.particles)
 				{
 					presetParticle(p);
 				}
+				_particleSystemDirty = false
+			}
+			return;
+		}
+		
+		protected var _particleSystemDirty:Boolean = false;
+		override public function set particleSystem(value:ParticleSystemExt):void
+		{
+			super.particleSystem = value;
+			if( value )
+			{
+				_particleSystemDirty = true;
 			}
 		}
 		
