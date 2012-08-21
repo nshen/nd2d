@@ -33,11 +33,8 @@ package
 
 	import avmplus.getQualifiedClassName;
 	
-	import com.bit101.components.PushButton;
-	
 	import de.nulldesign.nd2d.display.Scene2D;
 	import de.nulldesign.nd2d.display.World2D;
-	import de.nulldesign.nd2d.effect.modifier.AlphaModifier;
 	
 	import flash.display.StageAlign;
 	import flash.display.StageDisplayState;
@@ -45,7 +42,6 @@ package
 	import flash.display3D.Context3DRenderMode;
 	import flash.events.Event;
 	import flash.events.KeyboardEvent;
-	import flash.events.MouseEvent;
 	import flash.text.TextField;
 	import flash.text.TextFormat;
 	import flash.ui.Keyboard;

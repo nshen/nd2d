@@ -199,6 +199,9 @@ package de.nulldesign.nd2d.materials {
 
 		override protected function prepareForRender(context:Context3D):void {
 
+			// there is no ipad1 fragment shader fix for this material yet. so assume, the node is always tinted and use the color transform shader
+			nodeTinted = true;
+
 			super.prepareForRender(context);
 
 			context.setProgramConstantsFromVector(Context3DProgramType.FRAGMENT, 2, fragmentData, 2);
@@ -296,20 +299,6 @@ package de.nulldesign.nd2d.materials {
 			clearAfterRender(context);
 		}
 
-		override public function dispose():void {
-			super.dispose();
-
-			if(blurredTexture) {
-				blurredTexture.dispose();
-				blurredTexture = null;
-			}
-
-			if(blurredTexture2) {
-				blurredTexture2.dispose();
-				blurredTexture2 = null;
-			}
-		}
-
 		override public function handleDeviceLoss():void {
 			super.handleDeviceLoss();
 			blurredTexture = null;
@@ -323,6 +312,50 @@ package de.nulldesign.nd2d.materials {
 
 				shaderData = horizontalShader;
 			}
+		}
+		
+		override public function dispose():void
+		{
+			if(horizontalShader) 
+			{
+				horizontalShader.dispose();
+				horizontalShader = null;
+			}
+			
+			if(verticalShader) 
+			{
+				verticalShader.dispose();
+				verticalShader = null;
+			}
+			
+			if(blurredTexture) 
+			{
+				blurredTexture.dispose();
+				blurredTexture = null;
+			}
+			
+			if(blurredTexture2) 
+			{
+				blurredTexture2.dispose();
+				blurredTexture2 = null;
+			}
+			
+			if(blurredTextureCam) 
+			{
+				blurredTextureCam.dispose();
+				blurredTextureCam = null;
+			}
+			
+			if(activeRenderToTexture) 
+			{
+				activeRenderToTexture.dispose();
+				activeRenderToTexture = null;
+			}
+			
+			if(fragmentData)
+				fragmentData = null;
+			
+			super.dispose();
 		}
 	}
 }

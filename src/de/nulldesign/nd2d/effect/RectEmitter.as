@@ -35,7 +35,6 @@ package de.nulldesign.nd2d.effect
 {
 	
 	import de.nulldesign.nd2d.utils.VectorUtil;
-	
 	import flash.geom.Vector3D;
 	
 	public class RectEmitter extends ParticleEmitterBase

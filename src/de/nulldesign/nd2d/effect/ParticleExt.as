@@ -74,19 +74,6 @@ package de.nulldesign.nd2d.effect
 			this.index = index;
 		}
 		
-//		public function set color(value:Number):void
-//		{
-//			startColor = endColor = value;
-//		}
-//		public function set size(value:Number):void
-//		{
-//			startSizeX = startSizeY = endSizeX = endSizeY = value;
-//		}
-//		public function set alpha(value:Number):void
-//		{
-//			startAlpha = endAlpha = value;
-//		}
-		
 		public function set startColor(value:Number):void
 		{
 			startR = value >> 16 & 0xff / 0xff;

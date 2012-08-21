@@ -103,9 +103,8 @@ package
 			stage.align = StageAlign.TOP_LEFT;
 			enableErrorChecking = false;
 
-			scenes.push(ParticleSystemExtTest);
 			scenes.push(SideScrollerTest);
-			scenes.push(MassiveSpritesTest);
+			scenes.push(MassiveSpritesTest);// dispose best practice 
 			scenes.push(MassiveSpriteCloudTest);
 			scenes.push(SpriteHierarchyTest);
 			scenes.push(SpriteHierarchyTest2);
@@ -131,6 +130,7 @@ package
 			scenes.push(QuadMaterialTest);
 			scenes.push(BlurTest);
 			scenes.push(SpriteCloudVisibilityTest);
+			scenes.push(ParticleSystemExtTest); // example on how to extend ND2D and build your own objects
 
 			var tf:TextFormat = new TextFormat("Arial", 11, 0xFFFFFF, true);
 
@@ -145,7 +145,7 @@ package
 			stage.addEventListener(Event.RESIZE, stageResize);
 			stageResize(null);
 
-			activeSceneIdx = 14;//scenes.length - 9;
+			activeSceneIdx = 0;// scenes.length - 3;
 			nextDemo();
 
 			stage.addEventListener(KeyboardEvent.KEY_UP, keyUp);
@@ -168,6 +168,10 @@ package
 			{
 				stage.displayState = StageDisplayState.FULL_SCREEN;
 			}
+			else if (e.keyCode == Keyboard.R)
+			{
+				scene.dispose();
+			}
 		}
 
 		public function nextDemo():void
@@ -178,7 +182,7 @@ package
 
 			camera.reset();
 
-			sceneText.text = "(" + (activeSceneIdx + 1) + "/" + scenes.length + ") " + getQualifiedClassName(scenes[activeSceneIdx]) + " // hit space for next test. f for fullscreen";
+			sceneText.text = "(" + (activeSceneIdx + 1) + "/" + scenes.length + ") " + getQualifiedClassName(scenes[activeSceneIdx]) + " // hit space = next test. f = fullscreen, r = dispose, d = device loss";
 
 			var sceneClass:Class = scenes[activeSceneIdx++] as Class;
 			var currentScene:Scene2D = new sceneClass();
