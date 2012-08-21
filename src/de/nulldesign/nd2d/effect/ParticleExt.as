@@ -1,3 +1,36 @@
+/*
+* ND2D - A Flash Molehill GPU accelerated 2D engine
+*
+* Author: Lars Gerckens
+* Copyright (c) nulldesign 2011
+* Repository URL: http://github.com/nulldesign/nd2d
+* Getting started: https://github.com/nulldesign/nd2d/wiki
+*
+* ParticleExt system by Nshen 
+* nshen121@gmail.com
+* Working progress or Chinese documents see: http://www.nshen.net/effector.html 
+*
+*
+* Licence Agreement
+*
+* Permission is hereby granted, free of charge, to any person obtaining a copy
+* of this software and associated documentation files (the "Software"), to deal
+* in the Software without restriction, including without limitation the rights
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to permit persons to whom the Software is
+* furnished to do so, subject to the following conditions:
+*
+* The above copyright notice and this permission notice shall be included in
+* all copies or substantial portions of the Software.
+*
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+* THE SOFTWARE.
+*/
 package de.nulldesign.nd2d.effect
 {
 	import flash.geom.Vector3D;
@@ -6,15 +39,19 @@ package de.nulldesign.nd2d.effect
 	{
 		public var index : int;
 		
-		public var pos : Vector3D = new Vector3D;
-		public var dir : Vector3D = new Vector3D;
-		public var vel : Number = 0;
+		public var pos:Vector3D = new Vector3D();
+		public var dir:Vector3D = new Vector3D();
+		public var vel:Number = 0;
 		
-		public var rot : Number = 0;
-		public var rotVel : Number = 0;
+		public var rot:Number = 0;
+		public var rotVel:Number = 0;
 		
-//		public var startColor:uint = 0xffffff;
-//		public var endColor:uint = 0xffffff;
+		public var startR:Number = 1;
+		public var startG:Number = 1;
+		public var startB:Number = 1;
+		public var endR:Number = 1;
+		public var endG:Number = 1;
+		public var endB:Number = 1;
 		public var startColorPercent:Number = 0 ;
 		public var endColorPercent:Number = 1;
 		
@@ -23,10 +60,6 @@ package de.nulldesign.nd2d.effect
 		public var startAlphaPercent:Number = 0;
 		public var endAlphaPercent:Number = 1;
 		
-//		public var u : Number = 0.0;
-//		public var v : Number = 0.0;
-//		public var su : Number = 1.0;
-//		public var sv : Number = 1.0;
 		
 		public var startTime:Number = 0 ;
 		public var lifeTime:Number = 0 ;
@@ -41,25 +74,18 @@ package de.nulldesign.nd2d.effect
 			this.index = index;
 		}
 		
-		public function set color(value:Number):void
-		{
-			startColor = endColor = value;
-		}
-		public function set size(value:Number):void
-		{
-			startSizeX = startSizeY = endSizeX = endSizeY = value;
-		}
-		public function set alpha(value:Number):void
-		{
-			startAlpha = endAlpha = value;
-		}
-		
-		public var startR:Number;
-		public var startG:Number;
-		public var startB:Number;
-		public var endR:Number;
-		public var endG:Number;
-		public var endB:Number;
+//		public function set color(value:Number):void
+//		{
+//			startColor = endColor = value;
+//		}
+//		public function set size(value:Number):void
+//		{
+//			startSizeX = startSizeY = endSizeX = endSizeY = value;
+//		}
+//		public function set alpha(value:Number):void
+//		{
+//			startAlpha = endAlpha = value;
+//		}
 		
 		public function set startColor(value:Number):void
 		{
@@ -84,40 +110,13 @@ package de.nulldesign.nd2d.effect
 			return endR << 16 | endG << 8 | endB;
 		}
 		
-//		public function get startR():Number
-//		{
-//			return ((startColor & 0xff0000) >> 16) / 0xff;
-//		}
-//		public function get startG():Number
-//		{
-//			return ((startColor & 0x00ff00) >> 8) / 0xff;
-//		}
-//		public function get startB():Number
-//		{
-//			return (startColor & 0x0000ff) / 0xff;
-//		}
-//		
-//		public function get endR():Number
-//		{
-//			return ((endColor & 0xff0000) >> 16) / 0xff;
-//		}
-//		public function get endG():Number
-//		{
-//			return ((endColor & 0x00ff00) >> 8) / 0xff;
-//		}
-//		public function get endB():Number
-//		{
-//			return (endColor & 0x0000ff) / 0xff;
-//		}
-		
 		public function reset():ParticleExt
 		{
 			startTime = 0;
 			lifeTime = 0;
-			
-			color = 0xffffff;
-			alpha = 1;
-			size = 1;
+			startColor = endColor = 0xffffff;
+			startAlpha = endAlpha = 1;
+			startSizeX = startSizeY = endSizeX = endSizeY  = 1;
 			vel = 0;
 			rot = 0;
 			rotVel = 0;
@@ -128,24 +127,5 @@ package de.nulldesign.nd2d.effect
 			return this;
 		}
 		
-//		public function set remainTime(value : int) : void
-//		{
-//			_remainTime = value;
-//			pastTime = 0;
-//		}
-//		public function get remainTime() : int {return _remainTime;}
-//		public function isDead() : Boolean {return _remainTime <= 0 && !noDead ; } 
-//		public function die() : void { pastTime += _remainTime; _remainTime = 0; noDead = false; }
-		
-		public function update(elapsed:Number) : void
-		{
-//			_remainTime -= elapsed;
-//			pastTime += elapsed;
-//			if(noDead && _remainTime<=0)
-//			{
-//				_remainTime = pastTime + _remainTime;
-//				pastTime = 0;
-//			}
-		}
 	}
 }

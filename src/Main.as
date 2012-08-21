@@ -104,37 +104,36 @@ package
 
 			stage.scaleMode = StageScaleMode.NO_SCALE;
 			stage.align = StageAlign.TOP_LEFT;
-			enableErrorChecking = true;
+			enableErrorChecking = false;
 
-			
-//			scenes.push(SideScrollerTest);
-//			scenes.push(MassiveSpritesTest);
-//			scenes.push(MassiveSpriteCloudTest);
-//			scenes.push(SpriteHierarchyTest);
-//			scenes.push(SpriteHierarchyTest2);
-//			scenes.push(Font2DTest);
-//			scenes.push(Grid2DTest);
-//			scenes.push(SpriteTest);
-//			scenes.push(SpriteAnimTest);
-//			scenes.push(StarFieldTest);
-//			scenes.push(ParticleSystemTest);
 			scenes.push(ParticleSystemExtTest);
-//			scenes.push(CameraTest);
-//			scenes.push(ParticleExplorer);
-//			scenes.push(MaskTest);
-//			scenes.push(TextureAtlasTest);
-//			scenes.push(BatchTest);
-//			scenes.push(TextureRendererTest);
-//			scenes.push(PostProcessingTest);
-//			scenes.push(ColorTransformTest);
-//			scenes.push(Sprite2DCloudParticles);
-//			scenes.push(SpeedTest);
-//			scenes.push(TextureAndRotationOptionsTest);
-//			scenes.push(Transform3DTest);
-//			scenes.push(TextFieldTest);
-//			scenes.push(QuadMaterialTest);
-//			scenes.push(BlurTest);
-//			scenes.push(SpriteCloudVisibilityTest);
+			scenes.push(SideScrollerTest);
+			scenes.push(MassiveSpritesTest);
+			scenes.push(MassiveSpriteCloudTest);
+			scenes.push(SpriteHierarchyTest);
+			scenes.push(SpriteHierarchyTest2);
+			scenes.push(Font2DTest);
+			scenes.push(Grid2DTest);
+			scenes.push(SpriteTest);
+			scenes.push(SpriteAnimTest);
+			scenes.push(StarFieldTest);
+			scenes.push(ParticleSystemTest);
+			scenes.push(CameraTest);
+			scenes.push(ParticleExplorer);
+			scenes.push(MaskTest);
+			scenes.push(TextureAtlasTest);
+			scenes.push(BatchTest);
+			scenes.push(TextureRendererTest);
+			scenes.push(PostProcessingTest);
+			scenes.push(ColorTransformTest);
+			scenes.push(Sprite2DCloudParticles);
+			scenes.push(SpeedTest);
+			scenes.push(TextureAndRotationOptionsTest);
+			scenes.push(Transform3DTest);
+			scenes.push(TextFieldTest);
+			scenes.push(QuadMaterialTest);
+			scenes.push(BlurTest);
+			scenes.push(SpriteCloudVisibilityTest);
 
 			var tf:TextFormat = new TextFormat("Arial", 11, 0xFFFFFF, true);
 

@@ -1,12 +1,13 @@
 /**
- * 来自 : http://code.google.com/p/bwhiting/source/browse/trunk/b3d/src/b3d/materials/shaders/AGAL.as
+ * copy from: http://code.google.com/p/bwhiting/source/browse/trunk/b3d/src/b3d/materials/shaders/AGAL.as
+ * and made a little change.
  * 
- * 修改：
- * 
+ * 做了些修改，仍然很不完善：
  * 添加注释
  * 一些方法source和target不能相同，抛出异常
- * sin方法写错修改
+ * sin方法写错了修正
  * kil参数错了
+ * _traceCode为true时输出agal
  * 
  */
 package de.nulldesign.nd2d.effect

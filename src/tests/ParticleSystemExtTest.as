@@ -6,6 +6,10 @@
 * Repository URL: http://github.com/nulldesign/nd2d
 * Getting started: https://github.com/nulldesign/nd2d/wiki
 *
+* ParticleExt system by Nshen 
+* nshen121@gmail.com
+* Working progress or Chinese documents see: http://www.nshen.net/effector.html 
+*
 *
 * Licence Agreement
 *
@@ -27,25 +31,16 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 * THE SOFTWARE.
 */
-
 package tests {
 	
-	import de.nulldesign.nd2d.display.ParticleSystem2D;
 	import de.nulldesign.nd2d.display.Scene2D;
 	import de.nulldesign.nd2d.effect.BurstEmitter;
 	import de.nulldesign.nd2d.effect.ParticleSystemExt;
-	import de.nulldesign.nd2d.effect.ParticleSystemExtPreset;
 	import de.nulldesign.nd2d.effect.RectEmitter;
 	import de.nulldesign.nd2d.materials.BlendModePresets;
 	import de.nulldesign.nd2d.materials.texture.Texture2D;
-	import de.nulldesign.nd2d.utils.ParticleSystemPreset;
 	
-	import flash.display.Sprite;
-	import flash.events.Event;
 	import flash.events.MouseEvent;
-	import flash.geom.Point;
-	
-	import flashx.textLayout.elements.BreakElement;
 	
 	public class ParticleSystemExtTest extends Scene2D {
 		
@@ -58,54 +53,49 @@ package tests {
 		private var burstEmitter:BurstEmitter
 		
 		
-		private var psp:ParticleSystemExtPreset;
-		
+		/**
+		 *  Mouse click to change the emitter at runtime
+		 */
 		public function ParticleSystemExtTest() {
 			
 			emitter = new RectEmitter();
-//			emitter.color = 0x222222;
-//			emitter.colorRange = 0xaaaaaa;
-			emitter.directionFrom.setTo(-500,0,0);
-			emitter.directionTo.setTo(600,0,0);
-			emitter.emitPeriod = 5;
-			emitter.emitTime = 2;
-			emitter.emitRate = 100;
-			emitter.rectFrom.setTo(-200,-200,0);
-			emitter.rectTo.setTo(200,200,0)
-			emitter.sizeX = 10;
-			emitter.sizeY = 10;
-			emitter.sizeRange = 10;
-			emitter.vel = 200;
-			emitter.rotVel = 5;
-			emitter.rotRange = 10;
-			emitter.color = 0xff0000;
-			
-//			emitter.lifeTime = 0.5
-		
-			
-			
-			
+			emitter.rectFrom.setTo(-500,250,0); 
+			emitter.rectTo.setTo(500,300,0);// emit rect pos is from (-500,250) to (500,300)
+			emitter.directionTo.y = -1      // up direction
+			emitter.vel = 100;           
+			emitter.velVariance = 200;      // particle speed  from 100 to 300
+			emitter.size = 5
+			emitter.sizeVariance = 25;      // particle size from 5 to 30
+			emitter.rot = 0;
+			emitter.rotVariance = 360;      // particle init rotation will be  0~ 360
+			emitter.emitPeriod = 0;         // 0 means emitting all the time
+			emitter.emitRate = 100;         // 100 particles per second
+			emitter.startAlpha = 1;
+			emitter.endAlpha = 0;
 			
 			emitter2 = new RectEmitter();
 			emitter2.color = 0x000000;
-			emitter2.colorRange = 0xffffff;
+			emitter2.colorVariance = 0xffffff;
 			emitter2.directionFrom.setTo(-500,0,0);
-			emitter2.directionTo.setTo(600,0,0);
-			emitter2.emitPeriod = 0;
-			emitter2.emitTime = 0;
-			emitter2.emitRate = 8000;
+			emitter2.directionTo.setTo(500,0,0);
+			emitter2.emitPeriod = 5; // every 5 seconds emit once
+			emitter2.emitTime = 2;   // emit duction is 2 seconds ,so there's 3 seconds intervial stop emit.
+			emitter2.emitRate = 100;
 			emitter2.rectFrom.setTo(-200,-200,0);
 			emitter2.rectTo.setTo(200,200,0)
-			emitter2.sizeX = 10;
-			emitter2.sizeY = 10;
-			emitter2.sizeRange = 50
+			emitter2.size = 15;
+			emitter2.sizeVariance = 15;
 			emitter2.vel = 200;
-			emitter2.rotVel = 5;
-			emitter2.rotRange = 10;
+			emitter2.rotVel = 300;  
+			emitter2.rotVariance = 600; //rotate 300~900 degress per second
+			emitter2.startAlpha = 0.1 ;
+			emitter2.endAlpha = 1;
+			emitter2.lifeTime = 3;
+			emitter2.lifeTimeVariance = 1;
 			
-			burstEmitter = new BurstEmitter();
-			burstEmitter.minStartPosition.x = -300.0;
-			burstEmitter.maxStartPosition.x = 300.0;
+			burstEmitter = new BurstEmitter(); // BurstEmitter emit all particles in particleSystem at once
+			burstEmitter.minStartPosition.x = -500;
+			burstEmitter.maxStartPosition.x = 500;
 			burstEmitter.startColor = 0x00FF00;
 			burstEmitter.startColorVariance = 0x0000FF;
 			burstEmitter.endColor = 0xAAFF33;
@@ -114,46 +104,52 @@ package tests {
 			burstEmitter.maxStartSize = 3;
 			burstEmitter.minEndSize = 70;
 			burstEmitter.maxEndSize = 80;
-			burstEmitter.spawnDelay = 5.0;
-			burstEmitter.minLife = 0.1;
+			burstEmitter.minLife = 1;
 			burstEmitter.maxLife = 5;
-			
-			particles = new ParticleSystemExt(Texture2D.textureFromBitmapData(new particleClass().bitmapData) ,10000);
+			burstEmitter.rot = 60; //initial degrees
+			burstEmitter.rotVel = 270;  
+			burstEmitter.rotVelVariance = 90 // rotate 270~360 degrees every second.
+				
+			particles = new ParticleSystemExt(Texture2D.textureFromBitmapData(new particleClass().bitmapData) ,500);
 			particles.emitter = emitter;
-			particles.colorModifier.addKeyFrame(0,  0,1,0);
-			particles.colorModifier.addKeyFrame(0.5,1,0,0);
-			particles.colorModifier.addKeyFrame(1,0,0,1);
-			
-			particles.alphaModifier.addKeyFrame(0,1);
-			particles.alphaModifier.addKeyFrame(0.5,0);
-//			particles.alphaAffector.addKeyFrame(0.6,1);
-			particles.alphaModifier.addKeyFrame(1,1);
+			particles.blendMode = BlendModePresets.ADD_PREMULTIPLIED_ALPHA;
 			addChild(particles);
 			
 			
-			particles.sizeModifier.addKeyFrame(0,0,0);
-			particles.sizeModifier.addKeyFrame(0.6,50,50);
-//			particles.sizeAffector.addKeyFrame(0.5,200,200);
-			particles.sizeModifier.addKeyFrame(1,0,0);
+			/**
+			 *    Modifiers is to modify particles's appearance based on the life percent of the particle.
+			 *    just uncommit bottom lines to see them.
+			 */
+			
+			//green to red ,then to blue
+//			particles.colorModifier.addKeyFrame(0,  0,1,0); 
+//			particles.colorModifier.addKeyFrame(0.5,1,0,0); 
+//			particles.colorModifier.addKeyFrame(1,0,0,1); 
+			
+//			particles.alphaModifier.addKeyFrame(0,1);
+//			particles.alphaModifier.addKeyFrame(0.5,0);
+//			particles.alphaModifier.addKeyFrame(1,1);
+			
+//			particles.sizeModifier.addKeyFrame(0,10,10);
+//			particles.sizeModifier.addKeyFrame(0.6,200,200);
+//			particles.sizeModifier.addKeyFrame(1,50,50);
+			
 			
 			particles.start();
-			particles.blendMode = BlendModePresets.ADD_PREMULTIPLIED_ALPHA;
+			
+			
 			
 			addEventListener(MouseEvent.CLICK , onMouseClick);
 		}
 		
-		protected var state:uint = 5;
+		protected var state:uint = 0;
+		protected var initModifiers:Boolean = false
 		protected function onMouseClick(event:MouseEvent):void
 		{
 			switch(state)
 			{
-				case 5:
-					particles.stop(true);
-					state = 0;
-					break ;
 				case 0:
 					particles.emitter = burstEmitter;
-					particles.start();
 					state = 1;
 					break;
 				case 1:
@@ -164,6 +160,7 @@ package tests {
 					particles.emitter = emitter;
 					state = 0;
 					break;
+		
 			}
 		
 		}		
